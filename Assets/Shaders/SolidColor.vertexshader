@@ -1,0 +1,48 @@
+#version 330 core
+
+
+// Input vertex data, different for all executions of this shader.
+
+layout(location = 0) in vec3 vertexPosition_modelspace;
+
+layout(location = 1) in vec3 vertexNormal_modelspace;  // You will need this when you do lighting
+
+layout(location = 2) in vec3 vertexColor; 
+
+// Values that stay constant for the whole mesh.
+
+uniform mat4 ViewProjectionTransform;
+
+uniform mat4 WorldTransform;// Outputs to fragment shader
+uniform mat4 viewTransform;
+uniform vec4 lightPosition;
+
+out vec3 normal;  // You will need this when you do per-fragment lighting
+
+out vec4 v_color;
+
+
+out vec4 lightVector;
+out vec3 eyeVector;
+void main()
+
+{
+	// Output position of the vertex, in clip space : MVP * position
+	
+gl_Position =  ViewProjectionTransform * WorldTransform * vec4(vertexPosition_modelspace,1);
+
+	
+normal = mat3(transpose(inverse(viewTransform*WorldTransform))) *vertexNormal_modelspace; // Does this need to be transformed when we pass it to the fragment shader?
+
+vec3 vertexPosition_viewspace = (viewTransform*WorldTransform * vec4(vertexPosition_modelspace.xyz, 1.0)).xyz;
+eyeVector = ( - vertexPosition_viewspace);
+if (lightPosition.w == 1){
+	lightVector = (viewTransform * lightPosition- vec4(vertexPosition_viewspace,1.0));
+	} 
+else {
+		lightVector =  - (viewTransform * lightPosition);
+	}
+v_color = vec4(vertexColor, 1.0f);
+
+}
+
