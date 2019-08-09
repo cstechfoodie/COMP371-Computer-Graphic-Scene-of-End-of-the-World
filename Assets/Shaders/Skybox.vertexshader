@@ -1,0 +1,21 @@
+#version 330 core
+
+
+// Input vertex data
+layout(location = 0) in vec3 vertexPoints;
+
+// Uniform Inputs
+uniform mat4 ProjectionTransform;
+uniform mat4 ViewTransform; //Does not contain camera translation information, as the camera movement should not affect the Skybox
+
+// Outputs to fragment shader
+out vec3 textureCoordinates;
+
+void main()
+{
+	//use the vertex points of the cube as the texture co-ordinates, since each side is just a square
+	//In this case use the negative, to rotate the textures 180 degrees
+	textureCoordinates = -vertexPoints; 
+
+	gl_Position = ProjectionTransform * ViewTransform * vec4(vertexPoints, 1.0);
+}

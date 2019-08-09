@@ -12,9 +12,13 @@
 
 using namespace glm;
 
+bool Camera::hasMoved;
+
 Camera::Camera()
 {
+	hasMoved = false;
 }
+
 
 Camera::~Camera()
 {

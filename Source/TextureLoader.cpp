@@ -45,3 +45,46 @@ int TextureLoader::LoadTexture(const char * imagepath)
  
     return texture;
 }
+
+//This method is used to load the skybox textures, since it is handled differently than a regular texture
+int TextureLoader::LoadSkyboxTexture(const char* imagepath, GLuint skyTexture, GLenum side)
+{    
+    // Load image using the Free Image library
+    FREE_IMAGE_FORMAT format = FreeImage_GetFileType(imagepath, 0);
+    FIBITMAP* image = FreeImage_Load(format, imagepath);
+    FIBITMAP* image32bits = FreeImage_ConvertTo32Bits(image);
+    
+
+    //Generate the cube map texture in Opengl
+    //glActiveTexture (GL_TEXTURE0);
+    glGenTextures (1, &skyTexture);
+    //GLuint textureInd = 0;
+    //glGenTextures(1, &textureInd);
+    assert(skyTexture != 0);
+    
+    // Set OpenGL filtering properties (bi-linear interpolation)
+    //Bind the texture to the cube map
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	//Texture parameters
+    //Clamp-to-edge parameter helps to hide the seams of the cube textures
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
+    
+    // Retrieve width and hight
+    int width = FreeImage_GetWidth(image32bits);
+    int height = FreeImage_GetHeight(image32bits);
+    
+    // This will upload the texture to the GPU memory
+    glTexImage2D(side, 0, GL_RGBA8, width, height,
+                 0, GL_BGRA, GL_UNSIGNED_BYTE, (void*)FreeImage_GetBits(image32bits));
+    
+    // Free images
+    FreeImage_Unload(image);
+    FreeImage_Unload(image32bits);
+ 
+    return skyTexture;
+}

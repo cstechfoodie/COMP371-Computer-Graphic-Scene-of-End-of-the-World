@@ -25,7 +25,7 @@
 #include "ParticleDescriptor.h"
 #include "ParticleEmitter.h"
 #include "ParticleSystem.h"
-
+#include "Skybox.h"
 
 using namespace std;
 using namespace glm;
@@ -51,7 +51,8 @@ World::World()
     int billboardTextureID = TextureLoader::LoadTexture("Textures/Particle.png");
 #else
 //    int billboardTextureID = TextureLoader::LoadTexture("../Assets/Textures/BillboardTest.bmp");
-    int billboardTextureID = TextureLoader::LoadTexture("../Assets/Textures/Particle.png");
+   int billboardTextureID = TextureLoader::LoadTexture("../Assets/Textures/Particle.png");
+	
 #endif
     assert(billboardTextureID != 0);
 
@@ -262,6 +263,12 @@ void World::Draw()
 		(*it)->Draw();
 	}
 
+	//Disable DepthMask so that everything always gets draw in front of the skybox
+	glDepthMask(GL_FALSE);
+
+	//Draw the skybox seperatly 
+	skyboxModel.Draw();
+
     Renderer::CheckForErrors();
     
     // Draw Billboards
@@ -272,7 +279,7 @@ void World::Draw()
 
 
 	// Restore previous shader
-	Renderer::SetShader((ShaderType) prevShader);
+	//Renderer::SetShader((ShaderType) prevShader);
 
 	Renderer::EndFrame();
 }
@@ -324,6 +331,14 @@ void World::LoadScene(const char * scene_path)
 				anim->Load(iss);
 				mAnimation.push_back(anim);
 			}
+			else if (result == "skybox1")
+			{
+				//Skybox attributes
+				Skybox* skybox = new Skybox();
+				skybox->Load(iss);
+				//Set to skybox attribute
+				skyboxModel = *skybox;
+			}
             else if (result == "particledescriptor")
             {
                 ParticleDescriptor* psd = new ParticleDescriptor();
@@ -352,6 +367,10 @@ void World::LoadScene(const char * scene_path)
 	}
 }
 
+std::vector<Model*>* World::getAllModels() {
+	return &mModel;
+}
+
 Animation* World::FindAnimation(ci_string animName)
 {
     for(std::vector<Animation*>::iterator it = mAnimation.begin(); it < mAnimation.end(); ++it)
@@ -363,7 +382,17 @@ Animation* World::FindAnimation(ci_string animName)
     }
     return nullptr;
 }
-
+Model* World::FindModel(ci_string modelName)
+{
+	for (std::vector<Model*>::iterator it = mModel.begin(); it < mModel.end(); ++it)
+	{
+		if ((*it)->GetName() == modelName)
+		{
+			return *it;
+		}
+	}
+	return nullptr;
+}
 AnimationKey* World::FindAnimationKey(ci_string keyName)
 {
     for(std::vector<AnimationKey*>::iterator it = mAnimationKey.begin(); it < mAnimationKey.end(); ++it)
