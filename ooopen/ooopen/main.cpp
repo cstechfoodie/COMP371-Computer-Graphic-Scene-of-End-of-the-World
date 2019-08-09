@@ -7,7 +7,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "shader_m.h"
-#include "camera.h"
+#include "mycamera.h"
 #include "model.h"
 
 #include <iostream>
@@ -80,13 +80,13 @@ int main()
 
 	// don't touch my shaders if you don't know what you want to do, create your own, if you don't know how, ask me
 	// -------------------------
-	Shader sceneShader("vshader_SCENE.txt", "fshader_SCENE.txt");
-	Shader lampShader("lamp_vshader.txt", "lamp_fshader.txt");
+	Shader sceneShader("../sources/shaders/vshader_SCENE.txt", "../sources/shaders/fshader_SCENE.txt");
+	Shader lampShader("../sources/shaders/lamp_vshader.txt", "../sources/shaders/lamp_fshader.txt");
 
 	// load scene models
 	// -----------
-	Model bridgeModel("371model/podium.obj");
-	Model towerModel("comp371project/sceneObjects.obj");
+	Model bridgeModel("../sources/models/371model/podium.obj");
+	Model towerModel("../sources/models/comp371project/sceneObjects.obj");
 
 	float vertices[] = {
 	   -0.5f, -0.5f, -0.5f,
