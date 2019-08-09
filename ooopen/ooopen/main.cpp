@@ -6,7 +6,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "shader_m.h"
+#include "shaderProgram.h"
 #include "mycamera.h"
 #include "model.h"
 
@@ -170,8 +170,12 @@ int main()
 		0,70,120,90
 	};
 
-
-
+	glm::vec3 PointLightPositions[] = {
+		glm::vec3(-4.5f, 4.8f, 1.3f),
+		glm::vec3(0.7f, 4.8f, -4.8f),
+		glm::vec3(-4.6f, 4.8f, -10.5f),
+		glm::vec3(-10.5f, 4.8f, -5.0f)
+	};
 
 	// draw in wireframe
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -198,21 +202,36 @@ int main()
 		//these are realted to light, you don't need to do change here, by the way the shader_m I added is really easier to use
 		sceneShader.use();
 
-		sceneShader.setVec3("pLight.position", lightPos);
-		sceneShader.setVec3("viewPos", camera.Position);
 
-		// light properties
-		sceneShader.setVec3("pLight.ambient", 0.5f, 0.5f, 0.5f);
-		sceneShader.setVec3("pLight.diffuse", 0.8f, 0.8f, 0.8f);
-		sceneShader.setVec3("pLight.specular", 1.0f, 1.0f, 1.0f);
-		sceneShader.setFloat("pLight.constant", 1.0f);
-		sceneShader.setFloat("pLight.linear", 0.09f);
-		sceneShader.setFloat("pLight.quadratic", 0.032f);
+		//set uniform stuff here
+		GLuint LightPositionID = glGetUniformLocation(sceneShader.ID, "pLight.position");
+		glUniform3f(LightPositionID, lightPos.x, lightPos.y, lightPos.z);
+		GLuint viewPositionID = glGetUniformLocation(sceneShader.ID, "viewPos");
+		glUniform3f(viewPositionID, camera.Position.x, camera.Position.y, camera.Position.z);
 
-		sceneShader.setVec3("dLight.direction", 10.0f, 20.0f, -5.0f);
-		sceneShader.setVec3("dLight.ambient", 1.0f, 1.0f, 1.0f);
-		sceneShader.setVec3("dLight.diffuse", 0.6f, 0.6f, 0.6f);
-		sceneShader.setVec3("dLight.specular", 0.5f, 0.5f, 0.5f);
+		//point light properties
+		GLuint pLightAmbientID = glGetUniformLocation(sceneShader.ID, "pLight.ambient");
+		glUniform3f(pLightAmbientID, 0.5f, 0.5f, 0.5f);
+		GLuint pLightDiffuseID = glGetUniformLocation(sceneShader.ID, "pLight.diffuse");
+		glUniform3f(pLightDiffuseID, 0.8f, 0.8f, 0.8f);
+		GLuint pLightSpecularID = glGetUniformLocation(sceneShader.ID, "pLight.specular");
+		glUniform3f(pLightSpecularID, 1.0f, 1.0f, 1.0f);
+		GLuint pLightConstantID = glGetUniformLocation(sceneShader.ID, "pLight.constant");
+		glUniform1f(pLightConstantID, 1.0f);
+		GLuint pLightLinearID = glGetUniformLocation(sceneShader.ID, "pLight.linear");
+		glUniform1f(pLightLinearID, 0.09f);
+		GLuint pLightQuadraticID = glGetUniformLocation(sceneShader.ID, "pLight.quadratic");
+		glUniform1f(pLightQuadraticID, 0.032f);
+
+		//directional light properties
+		GLuint dLightDirectionID = glGetUniformLocation(sceneShader.ID, "dLight.direction");
+		glUniform3f(dLightDirectionID, 10.0f, 20.0f, -5.0f);
+		GLuint dLightAmbientID = glGetUniformLocation(sceneShader.ID, "dLight.ambient");
+		glUniform3f(dLightAmbientID, 0.6f, 0.6f, 0.6f);
+		GLuint dLightDiffuseID = glGetUniformLocation(sceneShader.ID, "dLight.diffuse");
+		glUniform3f(dLightDiffuseID, 0.4f, 0.4f, 0.4f);
+		GLuint dLightSpecularID = glGetUniformLocation(sceneShader.ID, "dLight.specular");
+		glUniform3f(dLightSpecularID, 0.5f, 0.5f, 0.5f);
 
 
 		// view/projection transformations
@@ -253,6 +272,17 @@ int main()
 
 		glBindVertexArray(lightVAO);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
+
+		
+		for (unsigned int i = 0; i < 4; i++)
+		{
+			model = glm::mat4(1.0f);
+			model = glm::translate(model, PointLightPositions[i]);
+			model = glm::scale(model, glm::vec3(0.4f)); 
+			lampShader.setMat4("model", model);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+		}
+
 
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
