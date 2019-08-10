@@ -1,4 +1,2 @@
-﻿  ParticleSystem.cpp
-c:\users\l.b\source\repos\comp371-computer-graphic-scene-of-end-of-the-world\source\particlesystem.cpp(23): warning C4305: 'initializing': truncation from 'double' to 'float'
-c:\users\l.b\source\repos\comp371-computer-graphic-scene-of-end-of-the-world\source\particlesystem.cpp(104): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+﻿  ParticleEmitter.cpp
   Assignment1.vcxproj -> C:\Users\L.B\source\repos\COMP371-Computer-Graphic-Scene-of-End-of-the-World\VS2017\/../Bin/Assignment1-Debug.exe

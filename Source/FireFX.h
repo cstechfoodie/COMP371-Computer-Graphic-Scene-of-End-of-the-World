@@ -21,6 +21,7 @@
 #include "Model.h"
 				  
 #include <vector>
+#include <list>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/common.hpp>
@@ -36,7 +37,7 @@ public:
 	void Draw();
 
 	std::vector<ParticleSystem*> pSystems;
-	BillboardList bList;
+	std::vector<BillboardList*> bList;
 
 private:
 	void loadProperties();

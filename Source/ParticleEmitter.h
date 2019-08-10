@@ -16,10 +16,14 @@ class Model;
 class ParticleEmitter
 {
 public:
-    ParticleEmitter(glm::vec3 position, const Model* parent = nullptr);
+    ParticleEmitter(glm::vec3 position, Model* parent = nullptr);
     virtual glm::vec3 GetPosition(); // Would be random for line / circle emitters
-    
+	void setIndex(int index) {
+		_index = index;
+	}
+
 private:
     const Model* mpParent;
     glm::vec3 mPosition;
+	int _index;
 };

@@ -16,7 +16,7 @@ FireFX::FireFX()
 
 	assert(billboardTextureID != 0);
 
-	bList = BillboardList();
+	bList = std::vector<BillboardList*>();
 	pSystems = std::vector<ParticleSystem*>();
 	numOfpSystems = 2;
 	for (size_t i = 0; i < numOfpSystems; i++)
@@ -32,8 +32,8 @@ FireFX::~FireFX()
 {
 	for (size_t i = 0; i < numOfpSystems; i++)
 	{
+		// delete bList[i];
 		delete pSystems[i];
-		delete bList[i];
 	}
 	delete parent;
 }
@@ -73,7 +73,7 @@ void FireFX::loadProperties()
 	ci_ifstream input;
 	input.open(particle_path, ios::in);
 
-	unsigned int id = 0;
+	int id = 0;
 
 	// Invalid file
 	if (input.fail())
@@ -102,9 +102,12 @@ void FireFX::loadProperties()
 				ParticleDescriptor* psd = new ParticleDescriptor();
 				psd->Load(iss);
 
-				ParticleEmitter* emitter = new ParticleEmitter(vec3(0.0f, 0.0f, 0.0f), parent);
+				ParticleEmitter* emitter = new ParticleEmitter(glm::vec3(0.0f, 0.0f, 0.0f), parent);
+				emitter->setIndex(id);
 
 				pSystems.push_back(new ParticleSystem(emitter, psd, this, id++));
+
+				//id++;
 			}
 			else if (result.empty() == false && result[0] == '#')
 			{

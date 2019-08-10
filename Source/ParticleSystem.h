@@ -27,7 +27,7 @@ struct Particle
 class ParticleSystem
 {
 public:
-    ParticleSystem(ParticleEmitter* emitter, ParticleDescriptor* descriptor, FireFX* parent, unsigned int id);
+    ParticleSystem(ParticleEmitter* emitter, ParticleDescriptor* descriptor, FireFX* parent, unsigned int);
 	~ParticleSystem();
 
     void Update(float dt);

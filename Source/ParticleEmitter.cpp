@@ -9,10 +9,13 @@
 
 #include "ParticleEmitter.h"
 #include "Model.h"
+#include <glm/gtx/rotate_vector.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/common.hpp>
 
 using namespace glm;
 
-ParticleEmitter::ParticleEmitter(glm::vec3 position, const Model* parent)
+ParticleEmitter::ParticleEmitter(glm::vec3 position, Model* parent)
 : mpParent(parent), mPosition(position)
 {
 }
@@ -31,7 +34,7 @@ glm::vec3 ParticleEmitter::GetPosition()
 
     glm::vec3 position = vec3(mpParent->GetWorldMatrix()[3][0], mpParent->GetWorldMatrix()[3][1], mpParent->GetWorldMatrix()[3][2]);
 
-    // ...
+	position.z += 2 * _index;
     
     return position;
 }

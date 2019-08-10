@@ -94,22 +94,14 @@ void ParticleSystem::Update(float dt)
 		// Step 2 : You can rotate the result in step 1 by an random angle from 0 to
 		//          360 degrees about the original velocity vector
 
-		//delta angle of random velocity
-		float deltaAngle = EventManager::GetRandomFloat(0.0f, 1.0f) * mpDescriptor->velocityAngleRandomness;
-		
-		//Rotation angle of particle velocity
-		float rotationAngle = EventManager::GetRandomFloat(0.0f, 360);
+		float randomAngle = EventManager::GetRandomFloat(0, mpDescriptor->velocityAngleRandomness);
 
-		//Radius of spherical coordinate
-		float radius = pow(pow(newParticle->velocity.x, 2.0) + pow(newParticle->velocity.y, 2.0), 0.5);
+		glm::mat4 rotationMatFirst = glm::rotate(
+			glm::mat4(1.0f), radians(randomAngle),
+			glm::normalize(glm::cross(newParticle->velocity, glm::vec3(8, 0, 1)))
+		);
 
-		//for computing the rotational velocity from delta angle and the velocity after rotation by a random angle between 0 to 360
-		vec4 orthogonalVector = vec4(radius * sin(deltaAngle * PI / 150), radius * cos(deltaAngle * PI / 150), newParticle->velocity.z, 0);
-		mat4 orthogonalMatrix = rotate(mat4(1.0f), rotationAngle, mpDescriptor->velocity);
-		orthogonalVector = orthogonalMatrix * orthogonalVector;
-
-		//Update the value of particles' velocity
-		newParticle->velocity = vec3(orthogonalVector[0], orthogonalVector[1], orthogonalVector[2]);
+		newParticle->velocity = glm::vec3(rotationMatFirst * glm::vec4(newParticle->velocity, 0.0));
 
 		parent->bList[id]->AddBillboard(&newParticle->billboard);
     }
