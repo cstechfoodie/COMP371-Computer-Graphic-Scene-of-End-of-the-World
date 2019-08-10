@@ -10,9 +10,11 @@
 #pragma once
 
 #include "Billboard.h"
+#include "FireFX.h"
 
 class ParticleDescriptor;
 class ParticleEmitter;
+class FireFX;
 
 struct Particle
 {
@@ -25,7 +27,7 @@ struct Particle
 class ParticleSystem
 {
 public:
-    ParticleSystem(ParticleEmitter* emitter, ParticleDescriptor* descriptor);
+    ParticleSystem(ParticleEmitter* emitter, ParticleDescriptor* descriptor, FireFX* parent, unsigned int id);
 	~ParticleSystem();
 
     void Update(float dt);
@@ -37,4 +39,6 @@ private:
     std::list<Particle*> mParticleList;
     std::list<Particle*> mInactiveParticles;
     
+	FireFX* parent;
+	unsigned int id;
 };
