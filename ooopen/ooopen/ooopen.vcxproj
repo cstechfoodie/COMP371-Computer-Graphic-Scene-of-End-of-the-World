@@ -131,7 +131,7 @@
     <ClInclude Include="mycamera.h" />
     <ClInclude Include="mesh.h" />
     <ClInclude Include="model.h" />
-    <ClInclude Include="shader_m.h" />
+    <ClInclude Include="shaderProgram.h" />
     <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
