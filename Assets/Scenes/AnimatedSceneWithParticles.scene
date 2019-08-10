@@ -141,5 +141,3 @@ attenuation = 0.05 0.02 0.002
 animation = "CycleAnim"
 particleEmitter = "Smoke"
 
-[Skybox1]
-name		= "Skybox1"

@@ -1,0 +1,7 @@
+newmtl podium
+Kd 1 1 1
+map_Kd podium_color.png
+map_Bump podium_normal.png
+map_Ks podium_smooth.png
+illum 2
+

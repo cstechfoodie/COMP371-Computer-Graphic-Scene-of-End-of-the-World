@@ -8,15 +8,13 @@
 
 #pragma once
 
-#include <GL/glew.h>
 
 // Simple Texture Loader Class
 class TextureLoader
 {
 public:
-	static int LoadTexture(const char * imagepath);
-	static int LoadSkyboxTexture(const char * imagepath, GLuint skyTexture, GLenum side);
+    static int LoadTexture(const char * imagepath);
 
 private:
-
+    
 };

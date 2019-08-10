@@ -44,13 +44,11 @@ public:
     void RemoveParticleSystem(ParticleSystem* particleSystem);
     void AddParticleDescriptor(ParticleDescriptor* particleDescriptor);
 
-	std::vector<Model*>* getAllModels();
-	Model* FindModel(ci_string modelName);
-	
+    
 private:
     static World* instance;
+    
 	std::vector<Model*> mModel;
-	Skybox skyboxModel;
     std::vector<Animation*> mAnimation;
     std::vector<AnimationKey*> mAnimationKey;
 	std::vector<Camera*> mCamera;
