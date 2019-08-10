@@ -45,34 +45,7 @@ World::World()
 	mCamera.push_back(new StaticCamera(vec3(0.5f,  0.5f, 5.0f), vec3(0.0f, 0.5f, 0.0f), vec3(0.0f, 1.0f, 0.0f)));
 	mCurrentCamera = 0;
 
-    
-#if defined(PLATFORM_OSX)
-//    int billboardTextureID = TextureLoader::LoadTexture("Textures/BillboardTest.bmp");
-    int billboardTextureID = TextureLoader::LoadTexture("Textures/Particle.png");
-#else
-//    int billboardTextureID = TextureLoader::LoadTexture("../Assets/Textures/BillboardTest.bmp");
-    int billboardTextureID = TextureLoader::LoadTexture("../Assets/Textures/Particle.png");
-#endif
-    assert(billboardTextureID != 0);
-
-    mpBillboardList = new BillboardList(2048, billboardTextureID);
-
-    
-    // TODO - You can un-comment out these 2 temporary billboards and particle system
-    // That can help you debug billboards, you can set the billboard texture to billboardTest.png
-    /*    Billboard *b = new Billboard();
-     b->size  = glm::vec2(2.0, 2.0);
-     b->position = glm::vec3(0.0, 3.0, 0.0);
-     b->color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-     
-     Billboard *b2 = new Billboard();
-     b2->size  = glm::vec2(2.0, 2.0);
-     b2->position = glm::vec3(0.0, 3.0, 1.0);
-     b2->color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-
-     mpBillboardList->AddBillboard(b);
-     mpBillboardList->AddBillboard(b2);
-     */    // TMP
+	fire1 = new FireFX();
 }
 
 World::~World()
@@ -106,20 +79,7 @@ World::~World()
 	}
 	mCamera.clear();
     
-    for (vector<ParticleSystem*>::iterator it = mParticleSystemList.begin(); it < mParticleSystemList.end(); ++it)
-    {
-        delete *it;
-    }
-    mParticleSystemList.clear();
-    
-    for (vector<ParticleDescriptor*>::iterator it = mParticleDescriptorList.begin(); it < mParticleDescriptorList.end(); ++it)
-    {
-        delete *it;
-    }
-    mParticleDescriptorList.clear();
-
-    
-	delete mpBillboardList;
+	delete fire1;
 }
 
 World* World::GetInstance()
@@ -186,17 +146,9 @@ void World::Update(float dt)
 	for (vector<Model*>::iterator it = mModel.begin(); it < mModel.end(); ++it)
 	{
 		(*it)->Update(dt);
-	}
+	}    
     
-    // Update billboards
-    
-    for (vector<ParticleSystem*>::iterator it = mParticleSystemList.begin(); it != mParticleSystemList.end(); ++it)
-    {
-        (*it)->Update(dt);
-    }
-    
-    mpBillboardList->Update(dt);
-
+	fire1->Update(dt);
 }
 
 void World::Draw()
@@ -218,21 +170,21 @@ void World::Draw()
 	GLuint LightColorID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightColor");
 	GLuint LightAttenuationID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightAttenuation");
 	GLuint MaterialID = glGetUniformLocation(Renderer::GetShaderProgramID(), "materialCoefficients");
+
 	for (vector<Model*>::iterator it = mModel.begin(); it < mModel.end(); ++it)
 	{	
 		// Get a handle for Light Attributes uniform
 		glUniform4f(LightPositionID, lightPosition.x, lightPosition.y, lightPosition.z, lightPosition.w);
 		glUniform3f(LightColorID, lightColor.r, lightColor.g, lightColor.b);
+		
 		// Get a handle for Material Attributes uniform
-		vec4 material = mModel[2]->GetMaterial();
+		 vec4 material = mModel[1]->GetMaterial();
+
 		glUniform4f(MaterialID, material.x, material.y, material.z, material.w);
 		vec3 attenuation = (*it)->GetAttenuation();
 		glUniform3f(LightAttenuationID,attenuation.x, attenuation.y, attenuation.z);
 		
 		(*it)->Draw();
-		
-
-		
 	}
 
 	// Draw Path Lines
@@ -265,11 +217,7 @@ void World::Draw()
     Renderer::CheckForErrors();
     
     // Draw Billboards
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    mpBillboardList->Draw();
-    glDisable(GL_BLEND);
-
+	fire1->Draw();
 
 	// Restore previous shader
 	Renderer::SetShader((ShaderType) prevShader);
@@ -324,12 +272,6 @@ void World::LoadScene(const char * scene_path)
 				anim->Load(iss);
 				mAnimation.push_back(anim);
 			}
-            else if (result == "particledescriptor")
-            {
-                ParticleDescriptor* psd = new ParticleDescriptor();
-                psd->Load(iss);
-                AddParticleDescriptor(psd);
-            }
 			else if ( result.empty() == false && result[0] == '#')
 			{
 				// this is a comment line
@@ -381,40 +323,3 @@ const Camera* World::GetCurrentCamera() const
      return mCamera[mCurrentCamera];
 }
 
-void World::AddBillboard(Billboard* b)
-{
-    mpBillboardList->AddBillboard(b);
-}
-
-void World::RemoveBillboard(Billboard* b)
-{
-    mpBillboardList->RemoveBillboard(b);
-}
-
-void World::AddParticleSystem(ParticleSystem* particleSystem)
-{
-    mParticleSystemList.push_back(particleSystem);
-}
-
-void World::RemoveParticleSystem(ParticleSystem* particleSystem)
-{
-    vector<ParticleSystem*>::iterator it = std::find(mParticleSystemList.begin(), mParticleSystemList.end(), particleSystem);
-    mParticleSystemList.erase(it);
-}
-
-void World::AddParticleDescriptor(ParticleDescriptor* particleDescriptor)
-{
-    mParticleDescriptorList.push_back(particleDescriptor);
-}
-
-ParticleDescriptor* World::FindParticleDescriptor(ci_string name)
-{
-    for(std::vector<ParticleDescriptor*>::iterator it = mParticleDescriptorList.begin(); it < mParticleDescriptorList.end(); ++it)
-    {
-        if((*it)->GetName() == name)
-        {
-            return *it;
-        }
-    }
-    return nullptr;
-}

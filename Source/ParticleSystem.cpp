@@ -22,8 +22,8 @@ using namespace glm;
 //self-defined value of PI
 float PI = 3.14159265358979323846;
 
-ParticleSystem::ParticleSystem(ParticleEmitter* emitter, ParticleDescriptor* descriptor)
-: mpDescriptor(descriptor), mpEmitter(emitter), timeSinceLastParticleEmitted(0.0f)
+ParticleSystem::ParticleSystem(ParticleEmitter* emitter, ParticleDescriptor* descriptor, FireFX* parent)
+: mpDescriptor(descriptor), mpEmitter(emitter), timeSinceLastParticleEmitted(0.0f), parent(parent)
 {
     assert(mpDescriptor != nullptr);
     assert(mpEmitter != nullptr);
@@ -43,7 +43,7 @@ ParticleSystem::~ParticleSystem()
 {
 	for (std::list<Particle*>::iterator it = mParticleList.begin(); it != mParticleList.end(); ++it)
 	{
-        World::GetInstance()->RemoveBillboard(&(*it)->billboard);
+		parent->billboardList->RemoveBillboard(&(*it)->billboard);
 		delete *it;
 	}
 
@@ -73,7 +73,7 @@ void ParticleSystem::Update(float dt)
 		Particle* newParticle = mInactiveParticles.back();
 		mParticleList.push_back(newParticle);
 		mInactiveParticles.pop_back();
-		World::GetInstance()->AddBillboard(&newParticle->billboard);
+		parent->billboardList->AddBillboard(&newParticle->billboard);
 
 		// Set particle initial parameters
 		newParticle->billboard.position = mpEmitter->GetPosition();
@@ -111,7 +111,7 @@ void ParticleSystem::Update(float dt)
 		//Update the value of particles' velocity
 		newParticle->velocity = vec3(orthogonalVector[0], orthogonalVector[1], orthogonalVector[2]);
 
-		World::GetInstance()->AddBillboard(&newParticle->billboard);
+		parent->billboardList->AddBillboard(&newParticle->billboard);
     }
     
     
@@ -122,13 +122,8 @@ void ParticleSystem::Update(float dt)
         p->billboard.position += p->velocity * dt;
         
         // @TODO 6 - Update each particle parameters
-        //
-        // Update the velocity of the particle from the acceleration in the descriptor
 
 		p->velocity += (mpDescriptor->acceleration * dt);
-		//p->billboard.position += p->velocity * dt;
-
-        // Update the size of the particle according to its growth
 
 		p->billboard.size += dt * mpDescriptor->sizeGrowthVelocity;
 
@@ -148,11 +143,7 @@ void ParticleSystem::Update(float dt)
 		else 
 			p->billboard.color = mix(mpDescriptor->midColor, mpDescriptor->endColor,
 			(p->currentTime - (p->lifeTime - mpDescriptor->fadeOutTime)) / (p->lifeTime - (p->lifeTime - mpDescriptor->fadeOutTime)));
-                
-        
-        // ...
-        //p->billboard.color = vec4(1.0f, 1.0f, 1.0f, 1.0f); // wrong... check required implementation above
-        // ...
+                      
         
         // Do not touch code below...
         
@@ -163,7 +154,7 @@ void ParticleSystem::Update(float dt)
         {
             mInactiveParticles.push_back(*it);
             
-            World::GetInstance()->RemoveBillboard(&(p->billboard));
+			parent->billboardList->RemoveBillboard(&(p->billboard));
             mParticleList.remove(*it++);
         }
     }

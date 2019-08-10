@@ -104,6 +104,7 @@
     <None Include="..\Assets\Scenes\AnimatedScene.scene" />
     <None Include="..\Assets\Scenes\AnimatedSceneWithParticles.scene" />
     <None Include="..\Assets\Scenes\CoordinateSystem.scene" />
+    <None Include="..\Assets\Scenes\FireFX.scene" />
     <None Include="..\Assets\Scenes\StaticScene.scene" />
     <None Include="..\Assets\Shaders\BlueColor.fragmentshader" />
     <None Include="..\Assets\Shaders\PathLines.fragmentshader" />
@@ -119,6 +120,7 @@
     <ClCompile Include="..\Source\Camera.cpp" />
     <ClCompile Include="..\Source\CubeModel.cpp" />
     <ClCompile Include="..\Source\EventManager.cpp" />
+    <ClCompile Include="..\Source\FireFX.cpp" />
     <ClCompile Include="..\Source\FirstPersonCamera.cpp" />
     <ClCompile Include="..\Source\main.cpp" />
     <ClCompile Include="..\Source\Model.cpp" />
@@ -137,6 +139,7 @@
     <ClInclude Include="..\Source\Camera.h" />
     <ClInclude Include="..\Source\CubeModel.h" />
     <ClInclude Include="..\Source\EventManager.h" />
+    <ClInclude Include="..\Source\FireFX.h" />
     <ClInclude Include="..\Source\FirstPersonCamera.h" />
     <ClInclude Include="..\Source\Model.h" />
     <ClInclude Include="..\Source\ParsingHelper.h" />

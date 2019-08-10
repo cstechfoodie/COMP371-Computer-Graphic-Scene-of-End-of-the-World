@@ -1,0 +1,43 @@
+#pragma once
+
+#include "World.h"
+#include "Renderer.h"
+#include "ParsingHelper.h"
+
+#include "StaticCamera.h"
+#include "FirstPersonCamera.h"
+
+#include "CubeModel.h"
+#include "SphereModel.h"
+#include "Animation.h"
+#include "Billboard.h"
+#include <GLFW/glfw3.h>
+#include "EventManager.h"
+#include "TextureLoader.h"
+
+#include "ParticleDescriptor.h"
+#include "ParticleEmitter.h"
+#include "ParticleSystem.h"
+#include "Model.h"
+				  
+#include <vector>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/common.hpp>
+
+class FireFX
+{
+public:
+	FireFX();
+	~FireFX();
+
+	void Update(float dt);
+	void Draw();
+
+	BillboardList* billboardList;
+	ParticleSystem* particleSystem;
+
+private:
+	void loadProperties();
+	Model* parent;
+};

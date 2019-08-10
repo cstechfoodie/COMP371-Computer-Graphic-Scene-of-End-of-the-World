@@ -114,19 +114,6 @@ bool Model::ParseLine(const std::vector<ci_string> &token)
             
             mAnimation = World::GetInstance()->FindAnimation(animName);
 		}
-        else if (token[0] == "particleemitter")
-        {
-            assert(token.size() > 2);
-            assert(token[1] == "=");
-
-            ParticleDescriptor* desc = World::GetInstance()->FindParticleDescriptor(token[2]);
-            assert(desc != nullptr);
-            
-            ParticleEmitter* emitter = new ParticleEmitter(vec3(0.0f, 0.0f, 0.0f), this);
-            
-            ParticleSystem* ps = new ParticleSystem(emitter, desc);
-            World::GetInstance()->AddParticleSystem(ps);
-        }
 		else if (token[0] == "material") {
 			assert(token.size() > 5);
 			assert(token[1] == "=");
