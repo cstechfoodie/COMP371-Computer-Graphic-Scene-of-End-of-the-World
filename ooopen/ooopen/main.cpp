@@ -199,55 +199,42 @@ int main()
 		glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		//these are realted to light, you don't need to do change here, by the way the shader_m I added is really easier to use
+		//these are realted to light, you don't need to do change here
 		sceneShader.use();
 
 
 		//set uniform stuff here
-		GLuint LightPositionID = glGetUniformLocation(sceneShader.ID, "pLight.position");
-		glUniform3f(LightPositionID, lightPos.x, lightPos.y, lightPos.z);
-		GLuint viewPositionID = glGetUniformLocation(sceneShader.ID, "viewPos");
-		glUniform3f(viewPositionID, camera.Position.x, camera.Position.y, camera.Position.z);
+		glUniform3f(glGetUniformLocation(sceneShader.ID, "pLight.position"), lightPos.x, lightPos.y, lightPos.z);
+		glUniform3f(glGetUniformLocation(sceneShader.ID, "viewPos"), camera.Position.x, camera.Position.y, camera.Position.z);
 
 		//point light properties
-		GLuint pLightAmbientID = glGetUniformLocation(sceneShader.ID, "pLight.ambient");
-		glUniform3f(pLightAmbientID, 0.5f, 0.5f, 0.5f);
-		GLuint pLightDiffuseID = glGetUniformLocation(sceneShader.ID, "pLight.diffuse");
-		glUniform3f(pLightDiffuseID, 0.8f, 0.8f, 0.8f);
-		GLuint pLightSpecularID = glGetUniformLocation(sceneShader.ID, "pLight.specular");
-		glUniform3f(pLightSpecularID, 1.0f, 1.0f, 1.0f);
-		GLuint pLightConstantID = glGetUniformLocation(sceneShader.ID, "pLight.constant");
-		glUniform1f(pLightConstantID, 1.0f);
-		GLuint pLightLinearID = glGetUniformLocation(sceneShader.ID, "pLight.linear");
-		glUniform1f(pLightLinearID, 0.09f);
-		GLuint pLightQuadraticID = glGetUniformLocation(sceneShader.ID, "pLight.quadratic");
-		glUniform1f(pLightQuadraticID, 0.032f);
+		glUniform3f(glGetUniformLocation(sceneShader.ID, "pLight.ambient"), 0.5f, 0.5f, 0.5f);
+		glUniform3f(glGetUniformLocation(sceneShader.ID, "pLight.diffuse"), 0.8f, 0.8f, 0.8f);
+		glUniform3f(glGetUniformLocation(sceneShader.ID, "pLight.specular"), 1.0f, 1.0f, 1.0f);
+		glUniform1f(glGetUniformLocation(sceneShader.ID, "pLight.constant"), 1.0f);
+		glUniform1f(glGetUniformLocation(sceneShader.ID, "pLight.linear"), 0.09f);
+		glUniform1f(glGetUniformLocation(sceneShader.ID, "pLight.quadratic"), 0.032f);
 
 		//directional light properties
-		GLuint dLightDirectionID = glGetUniformLocation(sceneShader.ID, "dLight.direction");
-		glUniform3f(dLightDirectionID, 10.0f, 20.0f, -5.0f);
-		GLuint dLightAmbientID = glGetUniformLocation(sceneShader.ID, "dLight.ambient");
-		glUniform3f(dLightAmbientID, 0.6f, 0.6f, 0.6f);
-		GLuint dLightDiffuseID = glGetUniformLocation(sceneShader.ID, "dLight.diffuse");
-		glUniform3f(dLightDiffuseID, 0.4f, 0.4f, 0.4f);
-		GLuint dLightSpecularID = glGetUniformLocation(sceneShader.ID, "dLight.specular");
-		glUniform3f(dLightSpecularID, 0.5f, 0.5f, 0.5f);
+		glUniform3f(glGetUniformLocation(sceneShader.ID, "dLight.direction"), 10.0f, 20.0f, -5.0f);
+		glUniform3f(glGetUniformLocation(sceneShader.ID, "dLight.ambient"), 0.6f, 0.6f, 0.6f);
+		glUniform3f(glGetUniformLocation(sceneShader.ID, "dLight.diffuse"), 0.4f, 0.4f, 0.4f);
+		glUniform3f(glGetUniformLocation(sceneShader.ID, "dLight.specular"), 0.5f, 0.5f, 0.5f);
 
 
 		// view/projection transformations
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 		glm::mat4 view = camera.GetViewMatrix();
-		sceneShader.setMat4("projection", projection);
-		sceneShader.setMat4("view", view);
+		glUniformMatrix4fv(glGetUniformLocation(sceneShader.ID, "projection"), 1, GL_FALSE, &projection[0][0]);
+		glUniformMatrix4fv(glGetUniformLocation(sceneShader.ID, "view"), 1, GL_FALSE, &view[0][0]);
 
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
 		// render the loaded model
 		for (unsigned int i = 0; i < 4; i++) {
-			 // translate it down so it's at the center of the scene
 			model = glm::translate(model, bridgePositions[i]);
 			model = glm::rotate(model, glm::radians(bridgeRotationAngles[i]), glm::vec3(0.0f, 1.0f, 0.0f));
-			sceneShader.setMat4("model", model);
+			glUniformMatrix4fv(glGetUniformLocation(sceneShader.ID, "model"), 1, GL_FALSE, &model [0][0]);
 			bridgeModel.Draw(sceneShader);
 		}
 
@@ -256,19 +243,18 @@ int main()
 			
 			model = glm::translate(model, towerPositions[i]);
 			model = glm::rotate(model, glm::radians(towerRotationAngles[i]), glm::vec3(0.0f, 1.0f, 0.0f));
-
-			sceneShader.setMat4("model", model);
+			glUniformMatrix4fv(glGetUniformLocation(sceneShader.ID, "model"), 1, GL_FALSE, &model[0][0]);
 			towerModel.Draw(sceneShader);
 		}
 		
 		//I added a cube where there's a point light, comment it if you want
 		lampShader.use();
-		lampShader.setMat4("projection", projection);
-		lampShader.setMat4("view", view);
+		glUniformMatrix4fv(glGetUniformLocation(lampShader.ID, "projection"), 1, GL_FALSE, &projection[0][0]);
+		glUniformMatrix4fv(glGetUniformLocation(lampShader.ID, "view"), 1, GL_FALSE, &view[0][0]);
 		model = glm::mat4(1.0f);
 		model = glm::translate(model, lightPos);
 		model = glm::scale(model, glm::vec3(0.5f)); // a smaller cube
-		lampShader.setMat4("model", model);
+		glUniformMatrix4fv(glGetUniformLocation(lampShader.ID, "model"), 1, GL_FALSE, &model[0][0]);
 
 		glBindVertexArray(lightVAO);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
@@ -278,8 +264,8 @@ int main()
 		{
 			model = glm::mat4(1.0f);
 			model = glm::translate(model, PointLightPositions[i]);
-			model = glm::scale(model, glm::vec3(0.4f)); 
-			lampShader.setMat4("model", model);
+			model = glm::scale(model, glm::vec3(0.4f));
+			glUniformMatrix4fv(glGetUniformLocation(lampShader.ID, "model"), 1, GL_FALSE, &model[0][0]);
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
 
