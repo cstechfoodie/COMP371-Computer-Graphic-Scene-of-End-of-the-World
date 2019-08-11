@@ -12,7 +12,7 @@
 #include "World.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
-#include <glfw/glfw3.h>
+
 
 #include "Model.h"
 #include "Animation.h"
@@ -64,41 +64,45 @@ Animation::~Animation()
 
 void Animation::CreateVertexBuffer()
 {
-    // This is just to display lines between the animation keys
     for (int i=0; i<(int)mKey.size(); ++i)
     {
-        Vertex v;
-        v.position = mKey[i].mPosition;
-        mVertexBuffer.push_back(v);
+        spline.AddControlPoint(mKey[i].GetPosition());
     }
-    
-	// Create a vertex array
-	glGenVertexArrays(1, &mVAO);
-    glBindVertexArray(mVAO);
-
-	// Upload Vertex Buffer to the GPU, keep a reference to it (mVertexBufferID)
-	glGenBuffers(1, &mVBO);
-	glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3)*mVertexBuffer.size(), &(mVertexBuffer[0]), GL_STATIC_DRAW);
-    
-    // Create a vertex array
-    glGenVertexArrays(1, &mVAO);
-    glBindVertexArray(mVAO);
-    
-    // Upload Vertex Buffer to the GPU, keep a reference to it (mVertexBufferID)
-    glGenBuffers(1, &mVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3)*mVertexBuffer.size(), &(mVertexBuffer[0]), GL_STATIC_DRAW);
-    
-    // 1st attribute buffer : vertex Positions
-    glVertexAttribPointer(0,
-                          3,                // size
-                          GL_FLOAT,        // type
-                          GL_FALSE,        // normalized?
-                          sizeof(Vertex), // stride
-                          (void*)0        // array buffer offset
-                          );
-    glEnableVertexAttribArray(0);
+    // This is just to display lines between the animation keys
+//    for (int i=0; i<(int)mKey.size(); ++i)
+//    {
+//        Vertex v;
+//        v.position = mKey[i].mPosition;
+//        mVertexBuffer.push_back(v);
+//    }
+//
+//    // Create a vertex array
+//    glGenVertexArrays(1, &mVAO);
+//    glBindVertexArray(mVAO);
+//
+//    // Upload Vertex Buffer to the GPU, keep a reference to it (mVertexBufferID)
+//    glGenBuffers(1, &mVBO);
+//    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+//    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3)*mVertexBuffer.size(), &(mVertexBuffer[0]), GL_STATIC_DRAW);
+//
+//    // Create a vertex array
+//    glGenVertexArrays(1, &mVAO);
+//    glBindVertexArray(mVAO);
+//
+//    // Upload Vertex Buffer to the GPU, keep a reference to it (mVertexBufferID)
+//    glGenBuffers(1, &mVBO);
+//    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+//    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3)*mVertexBuffer.size(), &(mVertexBuffer[0]), GL_STATIC_DRAW);
+//
+//    // 1st attribute buffer : vertex Positions
+//    glVertexAttribPointer(0,
+//                          3,                // size
+//                          GL_FLOAT,        // type
+//                          GL_FALSE,        // normalized?
+//                          sizeof(Vertex), // stride
+//                          (void*)0        // array buffer offset
+//                          );
+//    glEnableVertexAttribArray(0);
 
 }
 
@@ -127,15 +131,16 @@ void Animation::Draw()
     // Notes:
     // The shader is bound in World.cpp and the ViewProjection Matrix uniform is set there...
 	// The Model View Projection transforms are computed in the Vertex Shader
-	mat4 identity(1.0f);
-	glBindVertexArray(mVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, mVBO);
-
-	GLuint WorldMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "WorldTransform");
-	glUniformMatrix4fv(WorldMatrixLocation, 1, GL_FALSE, &identity[0][0]);
-
-	// Draw the wireFrame
-	glDrawArrays(GL_LINE_LOOP, 0, mKey.size());
+    spline.Draw();
+//    mat4 identity(1.0f);
+//    glBindVertexArray(mVAO);
+//    glBindBuffer(GL_ARRAY_BUFFER, mVBO);
+//
+//    GLuint WorldMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "WorldTransform");
+//    glUniformMatrix4fv(WorldMatrixLocation, 1, GL_FALSE, &identity[0][0]);
+//
+//    // Draw the wireFrame
+//    glDrawArrays(GL_LINE_LOOP, 0, mKey.size());
 }
 
 
@@ -213,45 +218,73 @@ glm::mat4 Animation::GetAnimationWorldMatrix() const
     //           Finally concatenate the interpolated transforms into a single
     //           world transform and return it.
     
-    mat4 worldMatrix(1.0f);
-
-	float currentPosition = mCurrentTime;
-
-	while (currentPosition > mKeyTime[mKeyTime.size() - 1])
-	{
-		currentPosition -= mKeyTime[mKeyTime.size() - 1];
-	}
-
-	int startFrame = 0;
-
-	for (int i = 0; i < mKeyTime.size(); i++)
-	{
-		if (mCurrentTime > mKeyTime[i])
-		{
-			startFrame = i;
-		}
-	}
-
-	if (startFrame == mKeyTime.size() - 1)
-	{
-		startFrame = 0;
-	}
-
-	int endFrame = startFrame + 1;
-
-	float duration = mKeyTime[1] - mKeyTime[0];
-	
-	float t = (mCurrentTime - mKeyTime[startFrame]) / duration;
-
-	glm::quat q1 = angleAxis(radians(mKey[startFrame].GetRotationAngle()), mKey[startFrame].GetRotationAxis());
-	glm::quat q2 = angleAxis(radians(mKey[endFrame].GetRotationAngle()), mKey[endFrame].GetRotationAxis());
-	glm::quat q = slerp(q1, q2, t);
-	
-	mat4 scaleMatrix = scale(mat4(1.0f), mix(mKey[startFrame].GetScaling(), mKey[endFrame].GetScaling(), t));
-	mat4 translateMatrix = translate(mat4(1.0f), mix(mKey[startFrame].GetPosition(), mKey[endFrame].GetPosition(), t));
-	mat4 rotateMatrix = toMat4(q);
-
-	worldMatrix = translateMatrix * rotateMatrix * scaleMatrix;
-
-	return worldMatrix;
+//    mat4 worldMatrix(1.0f);
+//
+//    float currentPosition = mCurrentTime;
+//
+//    while (currentPosition > mKeyTime[mKeyTime.size() - 1])
+//    {
+//        currentPosition -= mKeyTime[mKeyTime.size() - 1];
+//    }
+//
+//    int startFrame = 0;
+//
+//    for (int i = 0; i < mKeyTime.size(); i++)
+//    {
+//        if (mCurrentTime > mKeyTime[i])
+//        {
+//            startFrame = i;
+//        }
+//    }
+//
+//    if (startFrame == mKeyTime.size() - 1)
+//    {
+//        startFrame = 0;
+//    }
+//
+//    int endFrame = startFrame + 1;
+//
+//    float duration = mKeyTime[1] - mKeyTime[0];
+//
+//    float t = (mCurrentTime - mKeyTime[startFrame]) / duration;
+//
+//    glm::quat q1 = angleAxis(radians(mKey[startFrame].GetRotationAngle()), mKey[startFrame].GetRotationAxis());
+//    glm::quat q2 = angleAxis(radians(mKey[endFrame].GetRotationAngle()), mKey[endFrame].GetRotationAxis());
+//    glm::quat q = slerp(q1, q2, t);
+//
+//    mat4 scaleMatrix = scale(mat4(1.0f), mix(mKey[startFrame].GetScaling(), mKey[endFrame].GetScaling(), t));
+//    mat4 translateMatrix = translate(mat4(1.0f), mix(mKey[startFrame].GetPosition(), mKey[endFrame].GetPosition(), t));
+//    mat4 rotateMatrix = toMat4(q);
+//
+//    worldMatrix = translateMatrix * rotateMatrix * scaleMatrix;
+//
+//    return worldMatrix;
+    
+    glm::mat4 rotationMatrix;
+    
+    int key1 = 0, key2 = 0;
+    float normalizedTime = 0.0f;
+    
+    for(int i = 1; i < (int)mKey.size(); ++i){
+        if(mCurrentTime < mKeyTime[i]){
+            key1 = i - 1;
+            key2 = i;
+            normalizedTime = (mCurrentTime - mKeyTime[key1]) / (mKeyTime[key2] - mKeyTime[key1]);
+            break;
+        }
+    }
+    
+    vec3 position = spline.GetPosition(key1 + normalizedTime);
+    
+    vec3 scaling = glm::mix(mKey[key1].mScaling, mKey[key2].mScaling, normalizedTime);
+    
+    quat q_f = angleAxis(glm::radians(mKey[key1].mRotationAngleInDegrees), mKey[key1].mRotationAxis);
+    quat q_c = angleAxis(glm::radians(mKey[key2].mRotationAngleInDegrees), mKey[key2].mRotationAxis);
+    quat q = slerp(q_f, q_c, normalizedTime);
+    rotationMatrix = glm::mat4_cast(q);
+    
+    mat4 t = glm::translate(mat4(1.0f), position);
+    mat4 s = glm::scale(mat4(1.0f), scaling);
+    
+    return t * rotationMatrix * s;
 }

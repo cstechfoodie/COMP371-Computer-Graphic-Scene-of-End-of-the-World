@@ -20,6 +20,7 @@ class Animation;
 class AnimationKey;
 class ParticleSystem;
 class ParticleDescriptor;
+class BSpline;
 
 class World
 {
@@ -54,6 +55,7 @@ private:
 	std::vector<Camera*> mCamera;
     std::vector<ParticleSystem*> mParticleSystemList;
     std::vector<ParticleDescriptor*> mParticleDescriptorList;
+    std::vector<BSpline*> mSpline;
 	unsigned int mCurrentCamera;
 
     BillboardList* mpBillboardList;

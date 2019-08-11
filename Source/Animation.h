@@ -14,6 +14,7 @@
 #include <vector>
 
 #include <glm/glm.hpp>
+#include "BSpline.hpp"
 
 
 class AnimationKey : public Model
@@ -58,6 +59,8 @@ private:
 
     std::vector<AnimationKey> mKey;
     std::vector<float> mKeyTime;
+    
+    BSpline spline;
 
     // For drawing lines between keys
     // The vertex format is only position
