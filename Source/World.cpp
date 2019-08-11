@@ -26,14 +26,31 @@
 #include "ParticleEmitter.h"
 #include "ParticleSystem.h"
 
+#include"lampModel.h"
+
 
 using namespace std;
 using namespace glm;
 
 World* World::instance;
 
-const vec4 lightPosition(0.0f, 10.0f, 20.0f,1.0f);//add a point light here
-const vec3 lightColor(1.0f, 1.0f, 1.0f);
+//const vec4 lightPosition(0.0f, 10.0f, 20.0f,1.0f);//add a point light here
+//const vec3 lightColor(1.0f, 1.0f, 1.0f);
+
+vec3 lightColors[5] = {
+	vec3(1.0f,0.0f,0.0f),
+	vec3(0.0f,1.0f,0.0f),
+	vec3(0.0f,0.0f,1.0f),
+	vec3(0.5f,0.5,0.5f),
+	vec3(1.0f,0.0f,0.0f)
+};
+vec4 lightPositions[5] = {
+	vec4(0.0f, 10.0f, 20.0f,1.0f),
+	vec4(0.0f, 10.0f, -20.0f,1.0f),
+	vec4(0.0f, 10.0f, 10.0f,1.0f),
+	vec4(5.0f, 10.0f, 10.0f,1.0f),
+	vec4(5.0f, 15.0f, 20.0f,1.0f)
+};
 
 World::World()
 {
@@ -118,6 +135,13 @@ World::~World()
     }
     mParticleDescriptorList.clear();
 
+
+	for (vector<Model*>::iterator it = lModel.begin(); it < lModel.end(); ++it)
+	{
+		delete *it;
+	}
+	lModel.clear();
+
     
 	delete mpBillboardList;
 }
@@ -194,6 +218,11 @@ void World::Update(float dt)
     {
         (*it)->Update(dt);
     }
+
+	for (vector<Model*>::iterator it = lModel.begin(); it < lModel.end(); ++it)
+	{
+		(*it)->Update(dt);
+	}
     
     mpBillboardList->Update(dt);
 
@@ -214,15 +243,31 @@ void World::Draw()
 	glUniformMatrix4fv(VPMatrixLocation, 1, GL_FALSE, &VP[0][0]);
 
 	// Draw models
-	GLuint LightPositionID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightPosition");
-	GLuint LightColorID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightColor");
+	GLuint LightPosition1ID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightPositions[0]");
+	GLuint LightPosition2ID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightPositions[1]");
+	GLuint LightPosition3ID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightPositions[2]");
+	GLuint LightPosition4ID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightPositions[3]");
+	GLuint LightPosition5ID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightPositions[4]");
+	GLuint LightColor1ID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightColors[0]");
+	GLuint LightColor2ID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightColors[1]");
+	GLuint LightColor3ID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightColors[2]");
+	GLuint LightColor4ID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightColors[3]");
+	GLuint LightColor5ID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightColors[4]");
 	GLuint LightAttenuationID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightAttenuation");
 	GLuint MaterialID = glGetUniformLocation(Renderer::GetShaderProgramID(), "materialCoefficients");
 	for (vector<Model*>::iterator it = mModel.begin(); it < mModel.end(); ++it)
 	{	
 		// Get a handle for Light Attributes uniform
-		glUniform4f(LightPositionID, lightPosition.x, lightPosition.y, lightPosition.z, lightPosition.w);
-		glUniform3f(LightColorID, lightColor.r, lightColor.g, lightColor.b);
+		glUniform4f(LightPosition1ID, lightPositions[0].x, lightPositions[0].y, lightPositions[0].z, lightPositions[0].w);
+		glUniform4f(LightPosition2ID, lightPositions[1].x, lightPositions[1].y, lightPositions[1].z, lightPositions[1].w);
+		glUniform4f(LightPosition3ID, lightPositions[2].x, lightPositions[2].y, lightPositions[2].z, lightPositions[2].w);
+		glUniform4f(LightPosition4ID, lightPositions[3].x, lightPositions[3].y, lightPositions[3].z, lightPositions[3].w);
+		glUniform4f(LightPosition5ID, lightPositions[4].x, lightPositions[4].y, lightPositions[4].z, lightPositions[4].w);
+		glUniform3f(LightColor1ID, lightColors[0].r, lightColors[0].g, lightColors[0].b);
+		glUniform3f(LightColor2ID, lightColors[1].r, lightColors[1].g, lightColors[1].b);
+		glUniform3f(LightColor3ID, lightColors[2].r, lightColors[2].g, lightColors[2].b);
+		glUniform3f(LightColor4ID, lightColors[3].r, lightColors[3].g, lightColors[3].b);
+		glUniform3f(LightColor5ID, lightColors[4].r, lightColors[4].g, lightColors[4].b);
 		// Get a handle for Material Attributes uniform
 		vec4 material = mModel[2]->GetMaterial();
 		glUniform4f(MaterialID, material.x, material.y, material.z, material.w);
@@ -269,6 +314,14 @@ void World::Draw()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     mpBillboardList->Draw();
     glDisable(GL_BLEND);
+
+	/*Renderer::SetShader(SHADER_LAMP);
+	VPMatrixLocation = glGetUniformLocation(Renderer::GetShaderProgramID(), "ViewProjectionTransform");
+	glUseProgram(Renderer::GetShaderProgramID());
+	for (vector<Model*>::iterator it = lModel.begin(); it < lModel.end(); ++it)
+	{
+		(*it)->Draw();
+	}*/
 
 
 	// Restore previous shader
@@ -330,6 +383,12 @@ void World::LoadScene(const char * scene_path)
                 psd->Load(iss);
                 AddParticleDescriptor(psd);
             }
+			/*if (result == "light")
+			{
+				LampModel* lamp = new LampModel();
+				lamp->Load(iss);
+				lModel.push_back(lamp);
+			}*/
 			else if ( result.empty() == false && result[0] == '#')
 			{
 				// this is a comment line
