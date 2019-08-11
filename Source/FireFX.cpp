@@ -7,11 +7,11 @@ using namespace glm;
 FireFX::FireFX()
 {
 #if defined(PLATFORM_OSX)
-	int smokeTextureID = TextureLoader::LoadTexture("Textures/Particle.png");
-	int fireTextureID = TextureLoader::LoadTexture("Textures/Particle.png");
+	int smokeTextureID = TextureLoader::LoadTexture("Textures/soft_fire_3x3.png");
+	int fireTextureID = TextureLoader::LoadTexture("Textures/soft_fire_3x3.png");
 #else
-	int smokeTextureID = TextureLoader::LoadTexture("../Assets/Textures/Particle.png");
-	int fireTextureID = TextureLoader::LoadTexture("../Assets/Textures/Particle.png");
+	int smokeTextureID = TextureLoader::LoadTexture("../Assets/Textures/fire_cutout_2x2.png");
+	int fireTextureID = TextureLoader::LoadTexture("../Assets/Textures/fire_cutout_2x2.png");
 #endif
 
 	assert(smokeTextureID != 0);
@@ -21,9 +21,7 @@ FireFX::FireFX()
 	pSystems = std::vector<ParticleSystem*>();
 	numOfpSystems = 1;
 
-	bList.push_back(new BillboardList(2048, smokeTextureID));
-	//bList.push_back(new BillboardList(2048, fireTextureID, 3));
-	//bList.push_back(new BillboardList(2048, fireTextureID, 3));
+	bList.push_back(new BillboardList(2048, smokeTextureID, 2));
 
 	loadProperties();
 }

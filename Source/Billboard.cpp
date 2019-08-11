@@ -107,7 +107,6 @@ BillboardList::BillboardList(unsigned int maxNumBillboards, int textureID, int r
                           );
     glEnableVertexAttribArray(3);
 
-
 }
 
 BillboardList::~BillboardList()
@@ -236,7 +235,19 @@ void BillboardList::Draw()
     glBindTexture(GL_TEXTURE_2D, mTextureID);
     glUniform1i(textureLocation, 0);				// Set our Texture sampler to user Texture Unit 0
 
+
+
+	// Set the index of the sub texture to use
+	
+	GLuint numOfRows = glGetUniformLocation(Renderer::GetShaderProgramID(), "numOfRows");
+	glUniform1i(numOfRows, rows);
+	
+	int randomIndex = EventManager::GetRandomFloat(0, rows * rows -1);
+
+	GLuint subtextureid = glGetUniformLocation(Renderer::GetShaderProgramID(), "subtextureid");
+	glUniform1i(subtextureid, randomIndex);
     
+
     Renderer::CheckForErrors();
 
     // This looks for the MVP Uniform variable in the Vertex Program
