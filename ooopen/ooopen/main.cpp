@@ -17,10 +17,16 @@
 using namespace irrklang;
 ISoundEngine *SoundEngine = createIrrKlangDevice();
 
+
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow *window);
+void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+
+static void cursorPositionCallback(GLFWwindow *window, double xposi, double yposi);
+void cursorEnterCallback(GLFWwindow *window, int entered);
+void mouseButtonCallback(GLFWwindow *window, int button, int action, int mods);
 
 //Cubemap method
 unsigned int loadTexture(const char *path);
@@ -36,6 +42,12 @@ Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
+
+//button
+double xposition;
+double yposition;
+double button_check = 0.92*SCR_WIDTH;
+double button_check2 = 0.975*SCR_WIDTH;
 
 // timing
 float deltaTime = 0.0f;
@@ -59,8 +71,8 @@ int main()
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // uncomment this statement to fix compilation on OS X
 #endif
 
-	// glfw window creation
-	// --------------------
+														 // glfw window creation
+														 // --------------------
 	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Evil Cult", NULL, NULL);
 	if (window == NULL)
 	{
@@ -73,11 +85,10 @@ int main()
 	glfwSetCursorPosCallback(window, mouse_callback);
 	glfwSetScrollCallback(window, scroll_callback);
 
-	// tell GLFW to capture our mouse
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetMouseButtonCallback(window, mouseButtonCallback);
 
 
-	
+
 
 	// glad: load all OpenGL function pointers
 	// ---------------------------------------
@@ -95,8 +106,10 @@ int main()
 	// -------------------------
 	Shader sceneShader("../sources/shaders/vshader_SCENE.txt", "../sources/shaders/fshader_SCENE.txt");
 	Shader lampShader("../sources/shaders/lamp_vshader.txt", "../sources/shaders/lamp_fshader.txt");
-
-
+	//button shaders
+	Shader Tshader("../sources/shaders/Tvshader.txt", "../sources/shaders/Tfshader.txt");
+	Shader T2shader("../sources/shaders/T2vshader.txt", "../sources/shaders/T2fshader.txt");
+	Shader T3shader("../sources/shaders/T3vshader.txt", "../sources/shaders/T3fshader.txt");
 	//Same here don't touch my shader
 	Shader shader("../sources/shaders/Cubemap.vertexshader", "../sources/shaders/Cubemap.fragmentshader");
 	Shader skyboxShader("../sources/shaders/Skybox.vertexshader", "../sources/shaders/Skybox.fragmentshader");
@@ -108,26 +121,26 @@ int main()
 	Model towerModel("../sources/models/comp371project/sceneObjects.obj");
 
 	float vertices[] = {
-	   -0.5f, -0.5f, -0.5f,
+		-0.5f, -0.5f, -0.5f,
 		0.5f, -0.5f, -0.5f,
 		0.5f,  0.5f, -0.5f,
 		0.5f,  0.5f, -0.5f,
-	   -0.5f,  0.5f, -0.5f,
-	   -0.5f, -0.5f, -0.5f,
+		-0.5f,  0.5f, -0.5f,
+		-0.5f, -0.5f, -0.5f,
 
-	   -0.5f, -0.5f,  0.5f,
+		-0.5f, -0.5f,  0.5f,
 		0.5f, -0.5f,  0.5f,
 		0.5f,  0.5f,  0.5f,
 		0.5f,  0.5f,  0.5f,
-	   -0.5f,  0.5f,  0.5f,
-	   -0.5f, -0.5f,  0.5f,
+		-0.5f,  0.5f,  0.5f,
+		-0.5f, -0.5f,  0.5f,
 
-	   -0.5f,  0.5f,  0.5f,
-	   -0.5f,  0.5f, -0.5f,
-	   -0.5f, -0.5f, -0.5f,
-	   -0.5f, -0.5f, -0.5f,
-	   -0.5f, -0.5f,  0.5f,
-	   -0.5f,  0.5f,  0.5f,
+		-0.5f,  0.5f,  0.5f,
+		-0.5f,  0.5f, -0.5f,
+		-0.5f, -0.5f, -0.5f,
+		-0.5f, -0.5f, -0.5f,
+		-0.5f, -0.5f,  0.5f,
+		-0.5f,  0.5f,  0.5f,
 
 		0.5f,  0.5f,  0.5f,
 		0.5f,  0.5f, -0.5f,
@@ -136,34 +149,34 @@ int main()
 		0.5f, -0.5f,  0.5f,
 		0.5f,  0.5f,  0.5f,
 
-	   -0.5f, -0.5f, -0.5f,
+		-0.5f, -0.5f, -0.5f,
 		0.5f, -0.5f, -0.5f,
 		0.5f, -0.5f,  0.5f,
 		0.5f, -0.5f,  0.5f,
-	   -0.5f, -0.5f,  0.5f,
-	   -0.5f, -0.5f, -0.5f,
+		-0.5f, -0.5f,  0.5f,
+		-0.5f, -0.5f, -0.5f,
 
-	   -0.5f,  0.5f, -0.5f,
+		-0.5f,  0.5f, -0.5f,
 		0.5f,  0.5f, -0.5f,
 		0.5f,  0.5f,  0.5f,
 		0.5f,  0.5f,  0.5f,
-	   -0.5f,  0.5f,  0.5f,
-	   -0.5f,  0.5f, -0.5f,
+		-0.5f,  0.5f,  0.5f,
+		-0.5f,  0.5f, -0.5f,
 	};
 
 	float cubeVertices[] = {
 		// positions          // normals
 		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
 		-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
 		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
 
 		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+		0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+		0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+		0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
 		-0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
 		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
 
@@ -174,24 +187,24 @@ int main()
 		-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
 		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
 
-		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-		 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-		 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+		0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+		0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+		0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+		0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+		0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+		0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
 
 		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+		0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+		0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+		0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
 		-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
 		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
 
 		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+		0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+		0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+		0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
 		-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
 		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
 	};
@@ -199,9 +212,9 @@ int main()
 		// positions          
 		-100.0f,  100.0f, -100.0f,
 		-100.0f, -100.0f, -100.0f,
-		 100.0f, -100.0f, -100.0f,
-		 100.0f, -100.0f, -100.0f,
-		 100.0f,  100.0f, -100.0f,
+		100.0f, -100.0f, -100.0f,
+		100.0f, -100.0f, -100.0f,
+		100.0f,  100.0f, -100.0f,
 		-100.0f,  100.0f, -100.0f,
 
 		-100.0f, -100.0f,  100.0f,
@@ -211,33 +224,33 @@ int main()
 		-100.0f,  100.0f,  100.0f,
 		-100.0f, -100.0f,  100.0f,
 
-		 100.0f, -100.0f, -100.0f,
-		 100.0f, -100.0f,  100.0f,
-		 100.0f,  100.0f,  100.0f,
-		 100.0f,  100.0f,  100.0f,
-		 100.0f,  100.0f, -100.0f,
-		 100.0f, -100.0f, -100.0f,
+		100.0f, -100.0f, -100.0f,
+		100.0f, -100.0f,  100.0f,
+		100.0f,  100.0f,  100.0f,
+		100.0f,  100.0f,  100.0f,
+		100.0f,  100.0f, -100.0f,
+		100.0f, -100.0f, -100.0f,
 
 		-100.0f, -100.0f,  100.0f,
 		-100.0f,  100.0f,  100.0f,
-		 100.0f,  100.0f,  100.0f,
-		 100.0f,  100.0f,  100.0f,
-		 100.0f, -100.0f,  100.0f,
+		100.0f,  100.0f,  100.0f,
+		100.0f,  100.0f,  100.0f,
+		100.0f, -100.0f,  100.0f,
 		-100.0f, -100.0f,  100.0f,
 
 		-100.0f,  100.0f, -100.0f,
-		 100.0f,  100.0f, -100.0f,
-		 100.0f,  100.0f,  100.0f,
-		 100.0f,  100.0f,  100.0f,
+		100.0f,  100.0f, -100.0f,
+		100.0f,  100.0f,  100.0f,
+		100.0f,  100.0f,  100.0f,
 		-100.0f,  100.0f,  100.0f,
 		-100.0f,  100.0f, -100.0f,
 
 		-100.0f, -100.0f, -100.0f,
 		-100.0f, -100.0f,  100.0f,
-		 100.0f, -100.0f, -100.0f,
-		 100.0f, -100.0f, -100.0f,
+		100.0f, -100.0f, -100.0f,
+		100.0f, -100.0f, -100.0f,
 		-100.0f, -100.0f,  100.0f,
-		 100.0f, -100.0f,  100.0f
+		100.0f, -100.0f,  100.0f
 	};
 
 
@@ -282,17 +295,17 @@ int main()
 
 
 	// load textures
-			// -------------
+	// -------------
 	vector<std::string> faces
 	{
-"../sources/Textures/skybox/mercury_ft.tga",
-"../sources/Textures/skybox/mercury_bk.tga",
-"../sources/Textures/skybox/mercury_up.tga",
-"../sources/Textures/skybox/mercury_dn.tga",
-"../sources/Textures/skybox/mercury_rt.tga",
-"../sources/Textures/skybox/mercury_lf.tga"
+		"../sources/Textures/skybox/mercury_ft.tga",
+		"../sources/Textures/skybox/mercury_bk.tga",
+		"../sources/Textures/skybox/mercury_up.tga",
+		"../sources/Textures/skybox/mercury_dn.tga",
+		"../sources/Textures/skybox/mercury_rt.tga",
+		"../sources/Textures/skybox/mercury_lf.tga"
 	};
-unsigned int cubemapTexture = loadCubemap(faces);
+	unsigned int cubemapTexture = loadCubemap(faces);
 
 	// shader configuration
 	// --------------------
@@ -336,6 +349,63 @@ unsigned int cubemapTexture = loadCubemap(faces);
 
 	// draw in wireframe
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+	//PANEL VAO VBO
+
+	float tvertices[] = {
+		1.0f,  1.0f, 0.0f,  // top right
+		1.0f,	-1.0f, 0.0f,  // bottom right
+		0.8f, -1.0f, 0.0f,  // bottom left
+		0.8f,  1.0f, 0.0f   // top left 
+	};
+	unsigned int tindices[] = {  // note that we start from 0!
+		0, 1, 3,  // first Triangle
+		1, 2, 3   // second Triangle
+	};
+	unsigned int tVBO, tVAO, tEBO;
+	glGenVertexArrays(1, &tVAO);
+	glGenBuffers(1, &tVBO);
+	glGenBuffers(1, &tEBO);
+	// bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
+	glBindVertexArray(tVAO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, tVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(tvertices), tvertices, GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, tEBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(tindices), tindices, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+	//BUTTON VAO VBO
+
+	float tbvertices[] = {
+		1.0f,  1.0f, 0.0f,  // top right
+		1.0f,	-1.0f, 0.0f,  // bottom right
+		-1.0f, -1.0f, 0.0f,  // bottom left
+		-1.0f,  1.0f, 0.0f
+	};
+	unsigned int tbindices[] = {  // note that we start from 0!
+		0, 1, 3,  // first Triangle
+		1, 2, 3   // second Triangle
+	};
+	unsigned int tbVBO, tbVAO, tbEBO;
+	glGenVertexArrays(1, &tbVAO);
+	glGenBuffers(1, &tbVBO);
+	glGenBuffers(1, &tbEBO);
+	// bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
+	glBindVertexArray(tbVAO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, tbVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(tbvertices), tbvertices, GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, tbEBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(tbindices), tbindices, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
 
 	// render loop
 	// -----------
@@ -442,12 +512,12 @@ unsigned int cubemapTexture = loadCubemap(faces);
 
 
 
-		
+
 
 
 		// render the loaded model
 		for (unsigned int i = 0; i < 4; i++) {
-			 // translate it down so it's at the center of the scene
+			// translate it down so it's at the center of the scene
 			model = glm::translate(model, bridgePositions[i]);
 			model = glm::rotate(model, glm::radians(bridgeRotationAngles[i]), glm::vec3(0.0f, 1.0f, 0.0f));
 			sceneShader.setMat4("model", model);
@@ -456,14 +526,14 @@ unsigned int cubemapTexture = loadCubemap(faces);
 
 		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
 		for (unsigned int i = 0; i < 4; i++) {
-			
+
 			model = glm::translate(model, towerPositions[i]);
 			model = glm::rotate(model, glm::radians(towerRotationAngles[i]), glm::vec3(0.0f, 1.0f, 0.0f));
 
 			sceneShader.setMat4("model", model);
 			towerModel.Draw(sceneShader);
 		}
-		
+
 		//I added a cube where there's a point light, comment it if you want
 		lampShader.use();
 		lampShader.setMat4("projection", projection);
@@ -476,16 +546,101 @@ unsigned int cubemapTexture = loadCubemap(faces);
 		glBindVertexArray(lightVAO);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
-		
+
 		for (unsigned int i = 0; i < 4; i++)
 		{
 			model = glm::mat4(1.0f);
 			model = glm::translate(model, PointLightPositions[i]);
-			model = glm::scale(model, glm::vec3(0.4f)); 
+			model = glm::scale(model, glm::vec3(0.4f));
 			lampShader.setMat4("model", model);
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
 
+		Tshader.use();
+		glBindVertexArray(tVAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
+								 //glDrawArrays(GL_TRIANGLES, 0, 6);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+
+		T2shader.use();
+		model = glm::mat4(1.0f);
+		glm::vec3 po(0.9f, 0.9f, -1.0f);
+		model = glm::translate(model, po);
+		model = glm::scale(model, glm::vec3(0.05f));
+		model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
+		glUniformMatrix4fv(glGetUniformLocation(T2shader.ID, "worldMatrix"), 1, GL_FALSE, &model[0][0]);
+		glBindVertexArray(tbVAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
+								  //glDrawArrays(GL_TRIANGLES, 0, 6);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+
+		T2shader.use();
+		model = glm::mat4(1.0f);
+		glm::vec3 poi(0.9f, 0.6f, -1.0f);
+		model = glm::translate(model, poi);
+		model = glm::scale(model, glm::vec3(0.05f));
+		model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
+		glUniformMatrix4fv(glGetUniformLocation(T2shader.ID, "worldMatrix"), 1, GL_FALSE, &model[0][0]);
+		glBindVertexArray(tbVAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
+								  //glDrawArrays(GL_TRIANGLES, 0, 6);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+		T2shader.use();
+		model = glm::mat4(1.0f);
+		glm::vec3 pois(0.9f, 0.3f, -1.0f);
+		model = glm::translate(model, pois);
+		model = glm::scale(model, glm::vec3(0.05f));
+		model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
+		glUniformMatrix4fv(glGetUniformLocation(T2shader.ID, "worldMatrix"), 1, GL_FALSE, &model[0][0]);
+		glBindVertexArray(tbVAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
+								  //glDrawArrays(GL_TRIANGLES, 0, 6);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+		T2shader.use();
+		model = glm::mat4(1.0f);
+		glm::vec3 poist(0.9f, 0.0f, -1.0f);
+		model = glm::translate(model, poist);
+		model = glm::scale(model, glm::vec3(0.05f));
+		model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
+		glUniformMatrix4fv(glGetUniformLocation(T2shader.ID, "worldMatrix"), 1, GL_FALSE, &model[0][0]);
+		glBindVertexArray(tbVAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
+								  //glDrawArrays(GL_TRIANGLES, 0, 6);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+
+		T2shader.use();
+		model = glm::mat4(1.0f);
+		glm::vec3 poisti(0.9f, -0.3f, -1.0f);
+		model = glm::translate(model, poisti);
+		model = glm::scale(model, glm::vec3(0.05f));
+		model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
+		glUniformMatrix4fv(glGetUniformLocation(T2shader.ID, "worldMatrix"), 1, GL_FALSE, &model[0][0]);
+		glBindVertexArray(tbVAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
+								  //glDrawArrays(GL_TRIANGLES, 0, 6);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+
+		T2shader.use();
+		model = glm::mat4(1.0f);
+		glm::vec3 poistio(0.9f, -0.6f, -1.0f);
+		model = glm::translate(model, poistio);
+		model = glm::scale(model, glm::vec3(0.05f));
+		model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
+		glUniformMatrix4fv(glGetUniformLocation(T2shader.ID, "worldMatrix"), 1, GL_FALSE, &model[0][0]);
+		glBindVertexArray(tbVAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
+								  //glDrawArrays(GL_TRIANGLES, 0, 6);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+		T2shader.use();
+		model = glm::mat4(1.0f);
+		glm::vec3 poistion(0.9f, -0.9f, -1.0f);
+		model = glm::translate(model, poistion);
+		model = glm::scale(model, glm::vec3(0.05f));
+		model = glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
+		glUniformMatrix4fv(glGetUniformLocation(T2shader.ID, "worldMatrix"), 1, GL_FALSE, &model[0][0]);
+		glBindVertexArray(tbVAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
+								  //glDrawArrays(GL_TRIANGLES, 0, 6);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
@@ -532,6 +687,10 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 // -------------------------------------------------------
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
+
+	std::cout << xpos << " : " << ypos << std::endl;
+	xposition = xpos;
+	yposition = ypos;
 	if (firstMouse)
 	{
 		lastX = xpos;
@@ -559,7 +718,7 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 
 
 // utility function for loading a 2D texture from file
-		// ---------------------------------------------------
+// ---------------------------------------------------
 unsigned int loadTexture(char const * path)
 {
 	unsigned int textureID;
@@ -634,4 +793,62 @@ unsigned int loadCubemap(vector<std::string> faces)
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
 	return textureID;
+}
+
+
+
+
+
+void cursorEnterCallback(GLFWwindow *window, int entered)
+{
+	if (entered)
+	{
+		std::cout << "Entered Window" << std::endl;
+	}
+	else
+	{
+		std::cout << "Left window" << std::endl;
+	}
+}
+
+
+
+
+
+void mouseButtonCallback(GLFWwindow *window, int button, int action, int mods)
+{
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS && xposition>button_check && xposition<button_check2 && yposition>16 && yposition<58)
+	{
+		std::cout << "Button 1" << std::endl;
+	}
+
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS && xposition>button_check && xposition<button_check2 && yposition>131 && yposition<170)
+	{
+		std::cout << "Button 2" << std::endl;
+	}
+
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS && xposition>button_check && xposition<button_check2 && yposition>245 && yposition<285)
+	{
+		std::cout << "Button 3" << std::endl;
+	}
+
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS && xposition>button_check && xposition<button_check2 && yposition>359 && yposition<399)
+	{
+		std::cout << "Button 4" << std::endl;
+	}
+
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS && xposition>button_check && xposition<button_check2 && yposition>473 && yposition<513)
+	{
+		std::cout << "Button 5" << std::endl;
+	}
+
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS && xposition>button_check && xposition<button_check2 && yposition>587 && yposition<627)
+	{
+		std::cout << "Button 6" << std::endl;
+	}
+
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS && xposition>button_check && xposition<button_check2 && yposition>702 && yposition<739)
+	{
+		std::cout << "Button 7" << std::endl;
+	}
 }
