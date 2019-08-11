@@ -71,8 +71,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Computer Science\Comp371\Project\COMP371-Computer-Graphic-Scene-of-End-of-the-World-master\ooopen\thirdParty\Include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\Computer Science\Comp371\Project\COMP371-Computer-Graphic-Scene-of-End-of-the-World-master\ooopen\thirdParty\Libs;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)\thirdParty\Include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)\thirdParty\Libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -80,10 +80,10 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Computer Science\Comp371\Project\COMP371-Computer-Graphic-Scene-of-End-of-the-World-master\ooopen\thirdParty\glm;C:\Computer Science\Comp371\Project\COMP371-Computer-Graphic-Scene-of-End-of-the-World-master\ooopen\thirdParty\Include\glad;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\thirdParty\Include\glad;$(SolutionDir)\thirdParty\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;assimp-vc140-mt.lib;irrKlang.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -147,6 +147,10 @@
     <Image Include="..\sources\Textures\skybox\mercury_lf.tga" />
     <Image Include="..\sources\Textures\skybox\mercury_rt.tga" />
     <Image Include="..\sources\Textures\skybox\mercury_up.tga" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="..\sources\Sound\1. The Black Temple.mp3" />
+    <Media Include="..\sources\Sound\yanp.mp3" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

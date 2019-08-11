@@ -25,6 +25,9 @@
     <Filter Include="sources\Textures\skybox">
       <UniqueIdentifier>{f0eaa8ff-78f6-4adf-9a85-f8f24fc91574}</UniqueIdentifier>
     </Filter>
+    <Filter Include="sources\Sound">
+      <UniqueIdentifier>{e4a9eec4-3a53-4cd0-933e-d95887ae4354}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -87,5 +90,13 @@
     <Image Include="..\sources\Textures\skybox\mercury_up.tga">
       <Filter>sources\Textures\skybox</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="..\sources\Sound\1. The Black Temple.mp3">
+      <Filter>sources\Sound</Filter>
+    </Media>
+    <Media Include="..\sources\Sound\yanp.mp3">
+      <Filter>sources\Sound</Filter>
+    </Media>
   </ItemGroup>
 </Project>

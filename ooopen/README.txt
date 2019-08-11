@@ -1,6 +1,7 @@
 Hi before run the code you may need to set up some stuff.
 Make sure you do so in x86 not x64.
 
+Please do not delete .dll files in Debug folder otherwise the *.lib cannot be opened
 
 You need to connect include and libs to proper position,
  properities-vc++directories-include & library

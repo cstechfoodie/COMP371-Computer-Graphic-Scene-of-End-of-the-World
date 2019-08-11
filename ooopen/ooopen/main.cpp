@@ -10,6 +10,12 @@
 #include "model.h"
 #include "shaderProgram.h"
 #include <iostream>
+#include <irrKlang/irrKlang.h>
+
+
+//For soundtrack
+using namespace irrklang;
+ISoundEngine *SoundEngine = createIrrKlangDevice();
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -39,6 +45,9 @@ glm::vec3 lightPos(-7.0f, 0.0f, -3.0f);
 
 int main()
 {
+	//Play SoundTRack
+	SoundEngine->play2D("../sources/Sound/yanp.mp3", GL_FALSE);
+	SoundEngine->play2D("../sources/Sound/1. The Black Temple.mp3", GL_TRUE);
 	// glfw: initialize and configure
 	// ------------------------------
 	glfwInit();
