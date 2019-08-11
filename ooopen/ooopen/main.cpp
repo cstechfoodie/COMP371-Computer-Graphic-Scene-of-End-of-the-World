@@ -386,30 +386,54 @@ int main()
 
 
 		//set uniform stuff here
-		glUniform3f(glGetUniformLocation(sceneShader.ID, "pLight.position"), lightPos.x, lightPos.y, lightPos.z);
+		//glUniform3f(glGetUniformLocation(sceneShader.ID, "pLight.position"), lightPos.x, lightPos.y, lightPos.z);
 		glUniform3f(glGetUniformLocation(sceneShader.ID, "viewPos"), camera.Position.x, camera.Position.y, camera.Position.z);
 
 		//point light properties
-		/*for (unsigned int i = 0; i < 4; i++) {
-			glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[i].position"), PointLightPositions[i].x, PointLightPositions[i].y, PointLightPositions[i].z);
-			glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[i].ambient"), 0.5f, 0.5f, 0.5f);
-			glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[i].diffuse"), 0.8f, 0.8f, 0.8f);
-			glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[i].specular"), 1.0f, 1.0f, 1.0f);
-			glUniform1f(glGetUniformLocation(sceneShader.ID, "pLights[i].constant"), 1.0f);
-			glUniform1f(glGetUniformLocation(sceneShader.ID, "pLights[i].linear"), 0.09f);
-			glUniform1f(glGetUniformLocation(sceneShader.ID, "pLights[i].quadratic"), 0.032f);
-		}*/
-		glUniform3f(glGetUniformLocation(sceneShader.ID, "pLight.ambient"), 0.5f, 0.5f, 0.5f);
+		
+			glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[0].position"), PointLightPositions[0].x, PointLightPositions[0].y, PointLightPositions[0].z);
+			glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[0].ambient"), 0.5f, 0.5f, 0.5f);
+			glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[0].diffuse"), 0.8f, 0.8f, 0.8f);
+			glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[0].specular"), 1.0f, 1.0f, 1.0f);
+			glUniform1f(glGetUniformLocation(sceneShader.ID, "pLights[0].constant"), 1.0f);
+			glUniform1f(glGetUniformLocation(sceneShader.ID, "pLights[0].linear"), 0.09f);
+			glUniform1f(glGetUniformLocation(sceneShader.ID, "pLights[0].quadratic"), 0.032f);
+
+			glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[1].position"), PointLightPositions[1].x, PointLightPositions[1].y, PointLightPositions[1].z);
+			glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[1].ambient"), 0.5f, 0.5f, 0.5f);
+			glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[1].diffuse"), 0.8f, 0.8f, 0.8f);
+			glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[1].specular"), 1.0f, 1.0f, 1.0f);
+			glUniform1f(glGetUniformLocation(sceneShader.ID, "pLights[1].constant"), 1.0f);
+			glUniform1f(glGetUniformLocation(sceneShader.ID, "pLights[1].linear"), 0.09f);
+			glUniform1f(glGetUniformLocation(sceneShader.ID, "pLights[1].quadratic"), 0.032f);
+
+			glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[2].position"), PointLightPositions[2].x, PointLightPositions[2].y, PointLightPositions[2].z);
+			glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[2].ambient"), 0.5f, 0.5f, 0.5f);
+			glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[2].diffuse"), 0.8f, 0.8f, 0.8f);
+			glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[2].specular"), 1.0f, 1.0f, 1.0f);
+			glUniform1f(glGetUniformLocation(sceneShader.ID, "pLights[2].constant"), 1.0f);
+			glUniform1f(glGetUniformLocation(sceneShader.ID, "pLights[2].linear"), 0.09f);
+			glUniform1f(glGetUniformLocation(sceneShader.ID, "pLights[2].quadratic"), 0.032f);
+
+			glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[3].position"), PointLightPositions[3].x, PointLightPositions[3].y, PointLightPositions[3].z);
+			glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[3].ambient"), 0.5f, 0.5f, 0.5f);
+			glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[3].diffuse"), 0.8f, 0.8f, 0.8f);
+			glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[3].specular"), 1.0f, 1.0f, 1.0f);
+			glUniform1f(glGetUniformLocation(sceneShader.ID, "pLights[3].constant"), 1.0f);
+			glUniform1f(glGetUniformLocation(sceneShader.ID, "pLights[3].linear"), 0.09f);
+			glUniform1f(glGetUniformLocation(sceneShader.ID, "pLights[3].quadratic"), 0.032f);
+		
+		/*glUniform3f(glGetUniformLocation(sceneShader.ID, "pLight.ambient"), 0.5f, 0.5f, 0.5f);
 		glUniform3f(glGetUniformLocation(sceneShader.ID, "pLight.diffuse"), 0.8f, 0.8f, 0.8f);
 		glUniform3f(glGetUniformLocation(sceneShader.ID, "pLight.specular"), 1.0f, 1.0f, 1.0f);
 		glUniform1f(glGetUniformLocation(sceneShader.ID, "pLight.constant"), 1.0f);
 		glUniform1f(glGetUniformLocation(sceneShader.ID, "pLight.linear"), 0.09f);
-		glUniform1f(glGetUniformLocation(sceneShader.ID, "pLight.quadratic"), 0.032f);
+		glUniform1f(glGetUniformLocation(sceneShader.ID, "pLight.quadratic"), 0.032f);*/
 
 		//directional light properties
 		glUniform3f(glGetUniformLocation(sceneShader.ID, "dLight.direction"), 10.0f, 20.0f, -5.0f);
-		glUniform3f(glGetUniformLocation(sceneShader.ID, "dLight.ambient"), 0.6f, 0.6f, 0.6f);
-		glUniform3f(glGetUniformLocation(sceneShader.ID, "dLight.diffuse"), 0.4f, 0.4f, 0.4f);
+		glUniform3f(glGetUniformLocation(sceneShader.ID, "dLight.ambient"), 0.2f, 0.2f, 0.2f);
+		glUniform3f(glGetUniformLocation(sceneShader.ID, "dLight.diffuse"), 0.2f, 0.2f, 0.2f);
 		glUniform3f(glGetUniformLocation(sceneShader.ID, "dLight.specular"), 0.5f, 0.5f, 0.5f);
 
 
@@ -451,7 +475,7 @@ int main()
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
 		
-		for (unsigned int i = 0; i < 4; i++)
+		/*for (unsigned int i = 0; i < 4; i++)
 		{
 			model = glm::mat4(1.0f);
 			model = glm::translate(model, PointLightPositions[i]);
@@ -459,7 +483,7 @@ int main()
 			glUniformMatrix4fv(glGetUniformLocation(lampShader.ID, "model"), 1, GL_FALSE, &model[0][0]);
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
-
+*/
 
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
