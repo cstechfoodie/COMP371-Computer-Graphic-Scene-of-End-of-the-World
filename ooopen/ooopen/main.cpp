@@ -13,9 +13,19 @@
 #include <iostream>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow *window);
+void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+
+static void cursorPositionCallback(GLFWwindow *window, double xposi, double yposi);
+void cursorEnterCallback(GLFWwindow *window, int entered);
+void mouseButtonCallback(GLFWwindow *window, int button, int action, int mods);
+
+
+double xposition;
+double yposition;
+
+
 
 //Cubemap method
 unsigned int loadTexture(const char *path);
@@ -50,8 +60,8 @@ int main()
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); // uncomment this statement to fix compilation on OS X
 #endif
 
-	// glfw window creation
-	// --------------------
+														 // glfw window creation
+														 // --------------------
 	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Evil Cult", NULL, NULL);
 	if (window == NULL)
 	{
@@ -64,11 +74,13 @@ int main()
 	glfwSetCursorPosCallback(window, mouse_callback);
 	glfwSetScrollCallback(window, scroll_callback);
 
-	// tell GLFW to capture our mouse
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+	glfwSetMouseButtonCallback(window, mouseButtonCallback);
 
 
-	
+
+
+
+
 
 	// glad: load all OpenGL function pointers
 	// ---------------------------------------
@@ -86,7 +98,8 @@ int main()
 	// -------------------------
 	Shader sceneShader("../sources/shaders/vshader_SCENE.txt", "../sources/shaders/fshader_SCENE.txt");
 	Shader lampShader("../sources/shaders/lamp_vshader.txt", "../sources/shaders/lamp_fshader.txt");
-
+	Shader Tshader("../sources/shaders/Tvshader.txt", "../sources/shaders/Tfshader.txt");
+	Shader T2shader("../sources/shaders/T2vshader.txt", "../sources/shaders/T2fshader.txt");
 	//Same here don't touch my shader
 	Shader shader("../sources/shaders/Cubemap.vertexshader", "../sources/shaders/Cubemap.fragmentshader");
 	Shader skyboxShader("../sources/shaders/Skybox.vertexshader", "../sources/shaders/Skybox.fragmentshader");
@@ -97,26 +110,26 @@ int main()
 	Model towerModel("../sources/models/comp371project/sceneObjects.obj");
 
 	float vertices[] = {
-	   -0.5f, -0.5f, -0.5f,
+		-0.5f, -0.5f, -0.5f,
 		0.5f, -0.5f, -0.5f,
 		0.5f,  0.5f, -0.5f,
 		0.5f,  0.5f, -0.5f,
-	   -0.5f,  0.5f, -0.5f,
-	   -0.5f, -0.5f, -0.5f,
+		-0.5f,  0.5f, -0.5f,
+		-0.5f, -0.5f, -0.5f,
 
-	   -0.5f, -0.5f,  0.5f,
+		-0.5f, -0.5f,  0.5f,
 		0.5f, -0.5f,  0.5f,
 		0.5f,  0.5f,  0.5f,
 		0.5f,  0.5f,  0.5f,
-	   -0.5f,  0.5f,  0.5f,
-	   -0.5f, -0.5f,  0.5f,
+		-0.5f,  0.5f,  0.5f,
+		-0.5f, -0.5f,  0.5f,
 
-	   -0.5f,  0.5f,  0.5f,
-	   -0.5f,  0.5f, -0.5f,
-	   -0.5f, -0.5f, -0.5f,
-	   -0.5f, -0.5f, -0.5f,
-	   -0.5f, -0.5f,  0.5f,
-	   -0.5f,  0.5f,  0.5f,
+		-0.5f,  0.5f,  0.5f,
+		-0.5f,  0.5f, -0.5f,
+		-0.5f, -0.5f, -0.5f,
+		-0.5f, -0.5f, -0.5f,
+		-0.5f, -0.5f,  0.5f,
+		-0.5f,  0.5f,  0.5f,
 
 		0.5f,  0.5f,  0.5f,
 		0.5f,  0.5f, -0.5f,
@@ -125,34 +138,34 @@ int main()
 		0.5f, -0.5f,  0.5f,
 		0.5f,  0.5f,  0.5f,
 
-	   -0.5f, -0.5f, -0.5f,
+		-0.5f, -0.5f, -0.5f,
 		0.5f, -0.5f, -0.5f,
 		0.5f, -0.5f,  0.5f,
 		0.5f, -0.5f,  0.5f,
-	   -0.5f, -0.5f,  0.5f,
-	   -0.5f, -0.5f, -0.5f,
+		-0.5f, -0.5f,  0.5f,
+		-0.5f, -0.5f, -0.5f,
 
-	   -0.5f,  0.5f, -0.5f,
+		-0.5f,  0.5f, -0.5f,
 		0.5f,  0.5f, -0.5f,
 		0.5f,  0.5f,  0.5f,
 		0.5f,  0.5f,  0.5f,
-	   -0.5f,  0.5f,  0.5f,
-	   -0.5f,  0.5f, -0.5f,
+		-0.5f,  0.5f,  0.5f,
+		-0.5f,  0.5f, -0.5f,
 	};
 
 	float cubeVertices[] = {
 		// positions          // normals
 		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+		0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
 		-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
 		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
 
 		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+		0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+		0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+		0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
 		-0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
 		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
 
@@ -163,24 +176,24 @@ int main()
 		-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
 		-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
 
-		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-		 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-		 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-		 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+		0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+		0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+		0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+		0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+		0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+		0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
 
 		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+		0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+		0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+		0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
 		-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
 		-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
 
 		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-		 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-		 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+		0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+		0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+		0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
 		-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
 		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
 	};
@@ -188,9 +201,9 @@ int main()
 		// positions          
 		-100.0f,  100.0f, -100.0f,
 		-100.0f, -100.0f, -100.0f,
-		 100.0f, -100.0f, -100.0f,
-		 100.0f, -100.0f, -100.0f,
-		 100.0f,  100.0f, -100.0f,
+		100.0f, -100.0f, -100.0f,
+		100.0f, -100.0f, -100.0f,
+		100.0f,  100.0f, -100.0f,
 		-100.0f,  100.0f, -100.0f,
 
 		-100.0f, -100.0f,  100.0f,
@@ -200,33 +213,33 @@ int main()
 		-100.0f,  100.0f,  100.0f,
 		-100.0f, -100.0f,  100.0f,
 
-		 100.0f, -100.0f, -100.0f,
-		 100.0f, -100.0f,  100.0f,
-		 100.0f,  100.0f,  100.0f,
-		 100.0f,  100.0f,  100.0f,
-		 100.0f,  100.0f, -100.0f,
-		 100.0f, -100.0f, -100.0f,
+		100.0f, -100.0f, -100.0f,
+		100.0f, -100.0f,  100.0f,
+		100.0f,  100.0f,  100.0f,
+		100.0f,  100.0f,  100.0f,
+		100.0f,  100.0f, -100.0f,
+		100.0f, -100.0f, -100.0f,
 
 		-100.0f, -100.0f,  100.0f,
 		-100.0f,  100.0f,  100.0f,
-		 100.0f,  100.0f,  100.0f,
-		 100.0f,  100.0f,  100.0f,
-		 100.0f, -100.0f,  100.0f,
+		100.0f,  100.0f,  100.0f,
+		100.0f,  100.0f,  100.0f,
+		100.0f, -100.0f,  100.0f,
 		-100.0f, -100.0f,  100.0f,
 
 		-100.0f,  100.0f, -100.0f,
-		 100.0f,  100.0f, -100.0f,
-		 100.0f,  100.0f,  100.0f,
-		 100.0f,  100.0f,  100.0f,
+		100.0f,  100.0f, -100.0f,
+		100.0f,  100.0f,  100.0f,
+		100.0f,  100.0f,  100.0f,
 		-100.0f,  100.0f,  100.0f,
 		-100.0f,  100.0f, -100.0f,
 
 		-100.0f, -100.0f, -100.0f,
 		-100.0f, -100.0f,  100.0f,
-		 100.0f, -100.0f, -100.0f,
-		 100.0f, -100.0f, -100.0f,
+		100.0f, -100.0f, -100.0f,
+		100.0f, -100.0f, -100.0f,
 		-100.0f, -100.0f,  100.0f,
-		 100.0f, -100.0f,  100.0f
+		100.0f, -100.0f,  100.0f
 	};
 
 	unsigned int VBO, lightVAO;
@@ -267,16 +280,17 @@ int main()
 
 
 
+
 	// load textures
-			// -------------
+	// -------------
 	vector<std::string> faces
 	{
-"../sources/Textures/skybox/mercury_ft.tga",
-"../sources/Textures/skybox/mercury_bk.tga",
-"../sources/Textures/skybox/mercury_up.tga",
-"../sources/Textures/skybox/mercury_dn.tga",
-"../sources/Textures/skybox/mercury_rt.tga",
-"../sources/Textures/skybox/mercury_lf.tga"
+		"../sources/Textures/skybox/mercury_ft.tga",
+		"../sources/Textures/skybox/mercury_bk.tga",
+		"../sources/Textures/skybox/mercury_up.tga",
+		"../sources/Textures/skybox/mercury_dn.tga",
+		"../sources/Textures/skybox/mercury_rt.tga",
+		"../sources/Textures/skybox/mercury_lf.tga"
 	};
 	unsigned int cubemapTexture = loadCubemap(faces);
 
@@ -284,7 +298,7 @@ int main()
 	// --------------------
 	shader.use();
 	glUniform1i(glGetUniformLocation(shader.ID, "skybox"), 0);
-	
+
 
 	skyboxShader.use();
 	glUniform1i(glGetUniformLocation(skyboxShader.ID, "skybox"), 0);
@@ -321,8 +335,40 @@ int main()
 		glm::vec3(-10.5f, 4.8f, -5.0f)
 	};
 
+
+	float tvertices[] = {
+		0.5f,  0.5f, 0.0f,  // top right
+		0.5f, -0.5f, 0.0f,  // bottom right
+		-0.5f, -0.5f, 0.0f,  // bottom left
+		-0.5f,  0.5f, 0.0f   // top left 
+	};
+	unsigned int tindices[] = {  // note that we start from 0!
+		0, 1, 3,  // first Triangle
+		1, 2, 3   // second Triangle
+	};
+	unsigned int tVBO, tVAO, tEBO;
+	glGenVertexArrays(1, &tVAO);
+	glGenBuffers(1, &tVBO);
+	glGenBuffers(1, &tEBO);
+	// bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
+	glBindVertexArray(tVAO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, tVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(tvertices), tvertices, GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, tEBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(tindices), tindices, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
 	// draw in wireframe
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+
+
+
+
+
 
 	// render loop
 	// -----------
@@ -373,7 +419,7 @@ int main()
 		glUniformMatrix4fv(glGetUniformLocation(shader.ID, "view"), 1, GL_FALSE, &view[0][0]);
 		glUniformMatrix4fv(glGetUniformLocation(shader.ID, "projection"), 1, GL_FALSE, &projection[0][0]);
 		glUniform3f(glGetUniformLocation(shader.ID, "cameraPos"), camera.Position.x, camera.Position.y, camera.Position.z);
-		
+
 		// cubes
 		glBindVertexArray(cubeVAO);
 		glActiveTexture(GL_TEXTURE0);
@@ -390,39 +436,39 @@ int main()
 		glUniform3f(glGetUniformLocation(sceneShader.ID, "viewPos"), camera.Position.x, camera.Position.y, camera.Position.z);
 
 		//point light properties
-		
-			glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[0].position"), PointLightPositions[0].x, PointLightPositions[0].y, PointLightPositions[0].z);
-			glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[0].ambient"), 0.5f, 0.5f, 0.5f);
-			glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[0].diffuse"), 0.8f, 0.8f, 0.8f);
-			glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[0].specular"), 1.0f, 1.0f, 1.0f);
-			glUniform1f(glGetUniformLocation(sceneShader.ID, "pLights[0].constant"), 1.0f);
-			glUniform1f(glGetUniformLocation(sceneShader.ID, "pLights[0].linear"), 0.09f);
-			glUniform1f(glGetUniformLocation(sceneShader.ID, "pLights[0].quadratic"), 0.032f);
 
-			glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[1].position"), PointLightPositions[1].x, PointLightPositions[1].y, PointLightPositions[1].z);
-			glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[1].ambient"), 0.5f, 0.5f, 0.5f);
-			glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[1].diffuse"), 0.8f, 0.8f, 0.8f);
-			glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[1].specular"), 1.0f, 1.0f, 1.0f);
-			glUniform1f(glGetUniformLocation(sceneShader.ID, "pLights[1].constant"), 1.0f);
-			glUniform1f(glGetUniformLocation(sceneShader.ID, "pLights[1].linear"), 0.09f);
-			glUniform1f(glGetUniformLocation(sceneShader.ID, "pLights[1].quadratic"), 0.032f);
+		glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[0].position"), PointLightPositions[0].x, PointLightPositions[0].y, PointLightPositions[0].z);
+		glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[0].ambient"), 0.5f, 0.5f, 0.5f);
+		glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[0].diffuse"), 0.8f, 0.8f, 0.8f);
+		glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[0].specular"), 1.0f, 1.0f, 1.0f);
+		glUniform1f(glGetUniformLocation(sceneShader.ID, "pLights[0].constant"), 1.0f);
+		glUniform1f(glGetUniformLocation(sceneShader.ID, "pLights[0].linear"), 0.09f);
+		glUniform1f(glGetUniformLocation(sceneShader.ID, "pLights[0].quadratic"), 0.032f);
 
-			glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[2].position"), PointLightPositions[2].x, PointLightPositions[2].y, PointLightPositions[2].z);
-			glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[2].ambient"), 0.5f, 0.5f, 0.5f);
-			glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[2].diffuse"), 0.8f, 0.8f, 0.8f);
-			glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[2].specular"), 1.0f, 1.0f, 1.0f);
-			glUniform1f(glGetUniformLocation(sceneShader.ID, "pLights[2].constant"), 1.0f);
-			glUniform1f(glGetUniformLocation(sceneShader.ID, "pLights[2].linear"), 0.09f);
-			glUniform1f(glGetUniformLocation(sceneShader.ID, "pLights[2].quadratic"), 0.032f);
+		glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[1].position"), PointLightPositions[1].x, PointLightPositions[1].y, PointLightPositions[1].z);
+		glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[1].ambient"), 0.5f, 0.5f, 0.5f);
+		glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[1].diffuse"), 0.8f, 0.8f, 0.8f);
+		glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[1].specular"), 1.0f, 1.0f, 1.0f);
+		glUniform1f(glGetUniformLocation(sceneShader.ID, "pLights[1].constant"), 1.0f);
+		glUniform1f(glGetUniformLocation(sceneShader.ID, "pLights[1].linear"), 0.09f);
+		glUniform1f(glGetUniformLocation(sceneShader.ID, "pLights[1].quadratic"), 0.032f);
 
-			glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[3].position"), PointLightPositions[3].x, PointLightPositions[3].y, PointLightPositions[3].z);
-			glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[3].ambient"), 0.5f, 0.5f, 0.5f);
-			glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[3].diffuse"), 0.8f, 0.8f, 0.8f);
-			glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[3].specular"), 1.0f, 1.0f, 1.0f);
-			glUniform1f(glGetUniformLocation(sceneShader.ID, "pLights[3].constant"), 1.0f);
-			glUniform1f(glGetUniformLocation(sceneShader.ID, "pLights[3].linear"), 0.09f);
-			glUniform1f(glGetUniformLocation(sceneShader.ID, "pLights[3].quadratic"), 0.032f);
-		
+		glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[2].position"), PointLightPositions[2].x, PointLightPositions[2].y, PointLightPositions[2].z);
+		glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[2].ambient"), 0.5f, 0.5f, 0.5f);
+		glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[2].diffuse"), 0.8f, 0.8f, 0.8f);
+		glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[2].specular"), 1.0f, 1.0f, 1.0f);
+		glUniform1f(glGetUniformLocation(sceneShader.ID, "pLights[2].constant"), 1.0f);
+		glUniform1f(glGetUniformLocation(sceneShader.ID, "pLights[2].linear"), 0.09f);
+		glUniform1f(glGetUniformLocation(sceneShader.ID, "pLights[2].quadratic"), 0.032f);
+
+		glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[3].position"), PointLightPositions[3].x, PointLightPositions[3].y, PointLightPositions[3].z);
+		glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[3].ambient"), 0.5f, 0.5f, 0.5f);
+		glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[3].diffuse"), 0.8f, 0.8f, 0.8f);
+		glUniform3f(glGetUniformLocation(sceneShader.ID, "pLights[3].specular"), 1.0f, 1.0f, 1.0f);
+		glUniform1f(glGetUniformLocation(sceneShader.ID, "pLights[3].constant"), 1.0f);
+		glUniform1f(glGetUniformLocation(sceneShader.ID, "pLights[3].linear"), 0.09f);
+		glUniform1f(glGetUniformLocation(sceneShader.ID, "pLights[3].quadratic"), 0.032f);
+
 		/*glUniform3f(glGetUniformLocation(sceneShader.ID, "pLight.ambient"), 0.5f, 0.5f, 0.5f);
 		glUniform3f(glGetUniformLocation(sceneShader.ID, "pLight.diffuse"), 0.8f, 0.8f, 0.8f);
 		glUniform3f(glGetUniformLocation(sceneShader.ID, "pLight.specular"), 1.0f, 1.0f, 1.0f);
@@ -449,19 +495,19 @@ int main()
 		for (unsigned int i = 0; i < 4; i++) {
 			model = glm::translate(model, bridgePositions[i]);
 			model = glm::rotate(model, glm::radians(bridgeRotationAngles[i]), glm::vec3(0.0f, 1.0f, 0.0f));
-			glUniformMatrix4fv(glGetUniformLocation(sceneShader.ID, "model"), 1, GL_FALSE, &model [0][0]);
+			glUniformMatrix4fv(glGetUniformLocation(sceneShader.ID, "model"), 1, GL_FALSE, &model[0][0]);
 			bridgeModel.Draw(sceneShader);
 		}
 
 		model = glm::scale(model, glm::vec3(0.5f, 0.5f, 0.5f));
 		for (unsigned int i = 0; i < 4; i++) {
-			
+
 			model = glm::translate(model, towerPositions[i]);
 			model = glm::rotate(model, glm::radians(towerRotationAngles[i]), glm::vec3(0.0f, 1.0f, 0.0f));
 			glUniformMatrix4fv(glGetUniformLocation(sceneShader.ID, "model"), 1, GL_FALSE, &model[0][0]);
 			towerModel.Draw(sceneShader);
 		}
-		
+
 		//I added a cube where there's a point light, comment it if you want
 		lampShader.use();
 		glUniformMatrix4fv(glGetUniformLocation(lampShader.ID, "projection"), 1, GL_FALSE, &projection[0][0]);
@@ -474,16 +520,33 @@ int main()
 		glBindVertexArray(lightVAO);
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 
-		
+
 		/*for (unsigned int i = 0; i < 4; i++)
 		{
-			model = glm::mat4(1.0f);
-			model = glm::translate(model, PointLightPositions[i]);
-			model = glm::scale(model, glm::vec3(0.4f));
-			glUniformMatrix4fv(glGetUniformLocation(lampShader.ID, "model"), 1, GL_FALSE, &model[0][0]);
-			glDrawArrays(GL_TRIANGLES, 0, 36);
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, PointLightPositions[i]);
+		model = glm::scale(model, glm::vec3(0.4f));
+		glUniformMatrix4fv(glGetUniformLocation(lampShader.ID, "model"), 1, GL_FALSE, &model[0][0]);
+		glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
-*/
+		*/
+		//dont touch
+		//Tshader.use();
+		//glBindVertexArray(tVAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
+		//						 //glDrawArrays(GL_TRIANGLES, 0, 6);
+		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+
+		//T2shader.use();
+		//model = glm::mat4(1.0f);
+		//glm::vec3 po(0.3f, 0.0f, -1.0f);
+		//model = glm::translate(model, po);
+		//model = glm::scale(model, glm::vec3(0.1f));
+		//glUniformMatrix4fv(glGetUniformLocation(T2shader.ID, "worldMatrix"), 1, GL_FALSE, &model[0][0]);
+		//glBindVertexArray(tVAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
+		//						 //glDrawArrays(GL_TRIANGLES, 0, 6);
+		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
 
 
 		// glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
@@ -530,6 +593,11 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 // -------------------------------------------------------
 void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 {
+
+	std::cout << xpos << " : " << ypos << std::endl;
+	xposition = xpos;
+	yposition = ypos;
+
 	if (firstMouse)
 	{
 		lastX = xpos;
@@ -555,7 +623,7 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 
 
 // utility function for loading a 2D texture from file
-		// ---------------------------------------------------
+// ---------------------------------------------------
 unsigned int loadTexture(char const * path)
 {
 	unsigned int textureID;
@@ -630,4 +698,50 @@ unsigned int loadCubemap(vector<std::string> faces)
 	glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
 	return textureID;
+}
+
+
+
+
+
+
+
+void cursorEnterCallback(GLFWwindow *window, int entered)
+{
+	if (entered)
+	{
+		std::cout << "Entered Window" << std::endl;
+	}
+	else
+	{
+		std::cout << "Left window" << std::endl;
+	}
+}
+
+void mouseButtonCallback(GLFWwindow *window, int button, int action, int mods)
+{
+	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
+	{
+		std::cout << "Right button pressed" << std::endl;
+	}
+
+
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS && xposition>20 && yposition>20)
+	{
+		std::cout << "Left button pressed and yes" << std::endl;
+	}
+
+
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS && xposition<20 && yposition<20)
+	{
+		std::cout << "Left button pressed and no" << std::endl;
+	}
+
+
+
+
+
+
+
+
 }
