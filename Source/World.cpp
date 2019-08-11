@@ -32,8 +32,23 @@ using namespace glm;
 
 World* World::instance;
 
-const vec4 lightPosition(0.0f, 10.0f, 20.0f,1.0f);//add a point light here
-const vec3 lightColor(1.0f, 1.0f, 1.0f);
+//const vec4 lightPosition(0.0f, 10.0f, 20.0f,1.0f);//add a point light here
+//const vec3 lightColor(1.0f, 1.0f, 1.0f);
+
+vec3 lightColors[5] = {
+	vec3(1.0f,0.0f,0.0f),
+	vec3(0.0f,1.0f,0.0f),
+	vec3(0.0f,0.0f,1.0f),
+	vec3(0.5f,0.5,0.5f),
+	vec3(1.0f,0.0f,0.0f)
+};
+vec4 lightPositions[5] = {
+	vec4(0.0f, 10.0f, 20.0f,1.0f),
+	vec4(0.0f, 10.0f, -20.0f,1.0f),
+	vec4(0.0f, 10.0f, 10.0f,1.0f),
+	vec4(5.0f, 10.0f, 10.0f,1.0f),
+	vec4(5.0f, 15.0f, 20.0f,1.0f)
+};
 
 World::World()
 {
@@ -138,17 +153,36 @@ void World::Draw()
 	glUniformMatrix4fv(VPMatrixLocation, 1, GL_FALSE, &VP[0][0]);
 
 	// Draw models
-	GLuint LightPositionID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightPosition");
-	GLuint LightColorID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightColor");
+	GLuint LightPosition1ID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightPositions[0]");
+	GLuint LightPosition2ID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightPositions[1]");
+	GLuint LightPosition3ID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightPositions[2]");
+	GLuint LightPosition4ID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightPositions[3]");
+	GLuint LightPosition5ID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightPositions[4]");
+	GLuint LightColor1ID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightColors[0]");
+	GLuint LightColor2ID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightColors[1]");
+	GLuint LightColor3ID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightColors[2]");
+	GLuint LightColor4ID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightColors[3]");
+	GLuint LightColor5ID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightColors[4]");
+	//GLuint LightPositionID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightPosition");
+	//GLuint LightColorID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightColor");
 	GLuint LightAttenuationID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightAttenuation");
 	GLuint MaterialID = glGetUniformLocation(Renderer::GetShaderProgramID(), "materialCoefficients");
 
 	for (vector<Model*>::iterator it = mModel.begin(); it < mModel.end(); ++it)
 	{	
 		// Get a handle for Light Attributes uniform
-		glUniform4f(LightPositionID, lightPosition.x, lightPosition.y, lightPosition.z, lightPosition.w);
-		glUniform3f(LightColorID, lightColor.r, lightColor.g, lightColor.b);
-		
+		//glUniform4f(LightPositionID, lightPosition.x, lightPosition.y, lightPosition.z, lightPosition.w);
+		//glUniform3f(LightColorID, lightColor.r, lightColor.g, lightColor.b);
+		glUniform4f(LightPosition1ID, lightPositions[0].x, lightPositions[0].y, lightPositions[0].z, lightPositions[0].w);
+		glUniform4f(LightPosition2ID, lightPositions[1].x, lightPositions[1].y, lightPositions[1].z, lightPositions[1].w);
+		glUniform4f(LightPosition3ID, lightPositions[2].x, lightPositions[2].y, lightPositions[2].z, lightPositions[2].w);
+		glUniform4f(LightPosition4ID, lightPositions[3].x, lightPositions[3].y, lightPositions[3].z, lightPositions[3].w);
+		glUniform4f(LightPosition5ID, lightPositions[4].x, lightPositions[4].y, lightPositions[4].z, lightPositions[4].w);
+		glUniform3f(LightColor1ID, lightColors[0].r, lightColors[0].g, lightColors[0].b);
+		glUniform3f(LightColor2ID, lightColors[1].r, lightColors[1].g, lightColors[1].b);
+		glUniform3f(LightColor3ID, lightColors[2].r, lightColors[2].g, lightColors[2].b);
+		glUniform3f(LightColor4ID, lightColors[3].r, lightColors[3].g, lightColors[3].b);
+		glUniform3f(LightColor5ID, lightColors[4].r, lightColors[4].g, lightColors[4].b);
 		// Get a handle for Material Attributes uniform
 		 vec4 material = mModel[1]->GetMaterial();
 
@@ -190,6 +224,39 @@ void World::Draw()
     
     // Draw Billboards
 	fire1->Draw();
+
+
+	//for luo
+	//Renderer::SetShader(SHADER_SQUARE);
+	//glUseProgram(Renderer::GetShaderProgramID());
+	//float tvertices[] = {
+	//	0.5f,  0.5f, 0.0f,  // top right
+	//	0.5f, -0.5f, 0.0f,  // bottom right
+	//	-0.5f, -0.5f, 0.0f,  // bottom left
+	//	-0.5f,  0.5f, 0.0f   // top left 
+	//};
+	//unsigned int tindices[] = {  // note that we start from 0!
+	//	0, 1, 3,  // first Triangle
+	//	1, 2, 3   // second Triangle
+	//};
+	//unsigned int tVBO, tVAO, tEBO;
+	//glGenVertexArrays(1, &tVAO);
+	//glGenBuffers(1, &tVBO);
+	//glGenBuffers(1, &tEBO);
+	//// bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
+	//glBindVertexArray(tVAO);
+
+	//glBindBuffer(GL_ARRAY_BUFFER, tVBO);
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(tvertices), tvertices, GL_STATIC_DRAW);
+
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, tEBO);
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(tindices), tindices, GL_STATIC_DRAW);
+
+	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	//glEnableVertexAttribArray(0);
+	//glBindVertexArray(tVAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
+	//						 //						 //glDrawArrays(GL_TRIANGLES, 0, 6);
+	//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 	// Restore previous shader
 	Renderer::SetShader((ShaderType) prevShader);

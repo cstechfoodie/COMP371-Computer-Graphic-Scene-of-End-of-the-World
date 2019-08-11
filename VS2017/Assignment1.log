@@ -1,62 +1,37 @@
 ﻿  Animation.cpp
-c:\users\l.b\source\repos\comp371-computer-graphic-scene-of-end-of-the-world\source\animation.cpp(227): warning C4018: '<': signed/unsigned mismatch
+c:\users\x_i201\downloads\temp\comp371-computer-graphic-scene-of-end-of-the-world\source\animation.cpp(227): warning C4018: '<': signed/unsigned mismatch
   Billboard.cpp
-c:\users\l.b\source\repos\comp371-computer-graphic-scene-of-end-of-the-world\source\billboard.cpp(245): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\l.b\source\repos\comp371-computer-graphic-scene-of-end-of-the-world\source\billboard.cpp(245): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\users\x_i201\downloads\temp\comp371-computer-graphic-scene-of-end-of-the-world\source\billboard.cpp(245): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\users\x_i201\downloads\temp\comp371-computer-graphic-scene-of-end-of-the-world\source\billboard.cpp(245): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+  Camera.cpp
+  CubeModel.cpp
+  EventManager.cpp
   FireFX.cpp
-c:\users\l.b\source\repos\comp371-computer-graphic-scene-of-end-of-the-world\source\firefx.cpp(80): warning C4477: 'fprintf' : format string '%s' requires an argument of type 'char *', but variadic argument 1 has type 'std::string'
+c:\users\x_i201\downloads\temp\comp371-computer-graphic-scene-of-end-of-the-world\source\firefx.cpp(80): warning C4477: 'fprintf' : format string '%s' requires an argument of type 'char *', but variadic argument 1 has type 'std::string'
+  FirstPersonCamera.cpp
+  main.cpp
   Model.cpp
   ParticleDescriptor.cpp
-c:\users\l.b\source\repos\comp371-computer-graphic-scene-of-end-of-the-world\source\particledescriptor.cpp(107): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
-          with
-          [
-              T=float
-          ]
-c:\users\l.b\source\repos\comp371-computer-graphic-scene-of-end-of-the-world\source\particledescriptor.cpp(108): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
-          with
-          [
-              T=float
-          ]
-c:\users\l.b\source\repos\comp371-computer-graphic-scene-of-end-of-the-world\source\particledescriptor.cpp(109): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
-          with
-          [
-              T=float
-          ]
-c:\users\l.b\source\repos\comp371-computer-graphic-scene-of-end-of-the-world\source\particledescriptor.cpp(118): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
-          with
-          [
-              T=float
-          ]
-c:\users\l.b\source\repos\comp371-computer-graphic-scene-of-end-of-the-world\source\particledescriptor.cpp(119): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
-          with
-          [
-              T=float
-          ]
-c:\users\l.b\source\repos\comp371-computer-graphic-scene-of-end-of-the-world\source\particledescriptor.cpp(120): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
-          with
-          [
-              T=float
-          ]
-c:\users\l.b\source\repos\comp371-computer-graphic-scene-of-end-of-the-world\source\particledescriptor.cpp(128): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
-          with
-          [
-              T=float
-          ]
-c:\users\l.b\source\repos\comp371-computer-graphic-scene-of-end-of-the-world\source\particledescriptor.cpp(129): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
-          with
-          [
-              T=float
-          ]
-c:\users\l.b\source\repos\comp371-computer-graphic-scene-of-end-of-the-world\source\particledescriptor.cpp(130): warning C4244: '=': conversion from 'double' to 'T', possible loss of data
-          with
-          [
-              T=float
-          ]
+c:\users\x_i201\downloads\temp\comp371-computer-graphic-scene-of-end-of-the-world\source\particledescriptor.cpp(107): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\x_i201\downloads\temp\comp371-computer-graphic-scene-of-end-of-the-world\source\particledescriptor.cpp(108): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\x_i201\downloads\temp\comp371-computer-graphic-scene-of-end-of-the-world\source\particledescriptor.cpp(109): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\x_i201\downloads\temp\comp371-computer-graphic-scene-of-end-of-the-world\source\particledescriptor.cpp(118): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\x_i201\downloads\temp\comp371-computer-graphic-scene-of-end-of-the-world\source\particledescriptor.cpp(119): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\x_i201\downloads\temp\comp371-computer-graphic-scene-of-end-of-the-world\source\particledescriptor.cpp(120): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\x_i201\downloads\temp\comp371-computer-graphic-scene-of-end-of-the-world\source\particledescriptor.cpp(128): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\x_i201\downloads\temp\comp371-computer-graphic-scene-of-end-of-the-world\source\particledescriptor.cpp(129): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\x_i201\downloads\temp\comp371-computer-graphic-scene-of-end-of-the-world\source\particledescriptor.cpp(130): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
   ParticleEmitter.cpp
   ParticleSystem.cpp
-c:\users\l.b\source\repos\comp371-computer-graphic-scene-of-end-of-the-world\source\particlesystem.cpp(23): warning C4305: 'initializing': truncation from 'double' to 'float'
-c:\users\l.b\source\repos\comp371-computer-graphic-scene-of-end-of-the-world\source\particlesystem.cpp(100): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+c:\users\x_i201\downloads\temp\comp371-computer-graphic-scene-of-end-of-the-world\source\particlesystem.cpp(23): warning C4305: 'initializing': truncation from 'double' to 'float'
+c:\users\x_i201\downloads\temp\comp371-computer-graphic-scene-of-end-of-the-world\source\particlesystem.cpp(100): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+  Renderer.cpp
+  SphereModel.cpp
+  StaticCamera.cpp
+  TextureLoader.cpp
   World.cpp
-  main.cpp
   Generating Code...
-  Assignment1.vcxproj -> C:\Users\L.B\source\repos\COMP371-Computer-Graphic-Scene-of-End-of-the-World\VS2017\/../Bin/Assignment1-Debug.exe
+LINK : warning LNK4098: defaultlib 'LIBCMT' conflicts with use of other libs; use /NODEFAULTLIB:library
+LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
+glew32s.lib(glew.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'glew32s.lib(glew.obj)' or at 'C:\Users\x_i201\Downloads\temp\COMP371-Computer-Graphic-Scene-of-End-of-the-World\Bin\vc120.pdb'; linking object as if no debug info
+  Assignment1.vcxproj -> C:\Users\x_i201\Downloads\temp\COMP371-Computer-Graphic-Scene-of-End-of-the-World\VS2017\/../Bin/Assignment1-Debug.exe
