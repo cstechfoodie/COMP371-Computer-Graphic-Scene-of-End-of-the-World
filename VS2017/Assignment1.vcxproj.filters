@@ -103,6 +103,9 @@
     <ClCompile Include="..\Source\World.cpp">
       <Filter>Resource Files\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\lampModel.cpp">
+      <Filter>Resource Files\Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\SphereModel.h">
@@ -151,6 +154,9 @@
       <Filter>Resource Files\Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\Source\World.h">
+      <Filter>Resource Files\Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\lampModel.h">
       <Filter>Resource Files\Source Files</Filter>
     </ClInclude>
   </ItemGroup>
