@@ -32,9 +32,10 @@ glm::vec3 ParticleEmitter::GetPosition()
     // Return the position where the particle is emitted.
     // If the emitter is parented, the position is relative to its parent
 
-    glm::vec3 position = vec3(mpParent->GetWorldMatrix()[3][0], mpParent->GetWorldMatrix()[3][1], mpParent->GetWorldMatrix()[3][2]);
+	const Camera* cam = World::GetInstance()->GetCurrentCamera();
+	mat4 viewMatrix = cam->GetViewMatrix();
 
-	position.z += 2 * _index;
+    glm::vec3 position = vec3(mpParent->GetWorldMatrix()[3][0], mpParent->GetWorldMatrix()[3][1], mpParent->GetWorldMatrix()[3][2]);
     
     return position;
 }

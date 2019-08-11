@@ -94,10 +94,13 @@ void ParticleSystem::Update(float dt)
 		// Step 2 : You can rotate the result in step 1 by an random angle from 0 to
 		//          360 degrees about the original velocity vector
 
-		float randomAngle = EventManager::GetRandomFloat(0, mpDescriptor->velocityAngleRandomness);
 
+		float randomAngle = EventManager::GetRandomFloat(0, mpDescriptor->velocityAngleRandomness);
+		
+		float randSign = EventManager::GetRandomFloat(0, 1) > 0.5 ? 1 : -1;
+		
 		glm::mat4 rotationMatFirst = glm::rotate(
-			glm::mat4(1.0f), radians(randomAngle),
+			glm::mat4(1.0f), radians(randomAngle * randSign),
 			glm::normalize(glm::cross(newParticle->velocity, glm::vec3(8, 0, 1)))
 		);
 

@@ -49,6 +49,7 @@ private:
     float fadeOutTime;                      // time from mid to end stage
     float totalLifetime;                    // amount of time in seconds the particle will remain alive
     float totalLifetimeRandomness;
+	bool straight;
     
     friend class ParticleSystem;
 };

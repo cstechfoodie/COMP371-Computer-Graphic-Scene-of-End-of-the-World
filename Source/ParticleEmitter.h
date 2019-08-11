@@ -10,6 +10,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
+#include "World.h"
 
 class Model;
 

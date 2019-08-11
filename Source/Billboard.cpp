@@ -28,8 +28,8 @@ bool CompareBillboardAlongZ::operator()(const Billboard* a, const Billboard* b)
 }
 
 
-BillboardList::BillboardList(unsigned int maxNumBillboards, int textureID)
-: mTextureID(textureID), mMaxNumBillboards(maxNumBillboards)
+BillboardList::BillboardList(unsigned int maxNumBillboards, int textureID, int rows)
+: mTextureID(textureID), mMaxNumBillboards(maxNumBillboards), rows(rows)
 {
     // Pre-allocate Vertex Buffer - 6 vertices by billboard (2 triangles)
     mVertexBuffer.resize(maxNumBillboards * 6);

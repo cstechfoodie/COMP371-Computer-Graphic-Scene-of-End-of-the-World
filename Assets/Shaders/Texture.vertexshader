@@ -17,6 +17,8 @@ uniform mat4 ViewProjectionTransform;
 
 uniform mat4 WorldTransform;
 
+uniform int numOfRows;
+
 // Outputs to fragment shader
 
 out vec3 normal;  // You will need this when you do per-fragment lighting

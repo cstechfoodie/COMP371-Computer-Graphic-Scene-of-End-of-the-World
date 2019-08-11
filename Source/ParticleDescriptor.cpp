@@ -104,9 +104,10 @@ bool ParticleDescriptor::ParseLine(vector<ci_string> token)
         assert(token.size() > 5);
         assert(token[1] == "=");
         
-        initialColor.r = static_cast<float>(atof(token[2].c_str()));
-        initialColor.g = static_cast<float>(atof(token[3].c_str()));
-        initialColor.b = static_cast<float>(atof(token[4].c_str()));
+        initialColor.r = static_cast<float>(atof(token[2].c_str()))/255.0;
+        initialColor.g = static_cast<float>(atof(token[3].c_str()))/255.0;
+        initialColor.b = static_cast<float>(atof(token[4].c_str()))/255.0;
+
         initialColor.a = static_cast<float>(atof(token[5].c_str()));
     }
     else if (token[0] == "midColor")
@@ -114,9 +115,9 @@ bool ParticleDescriptor::ParseLine(vector<ci_string> token)
         assert(token.size() > 5);
         assert(token[1] == "=");
         
-        midColor.r = static_cast<float>(atof(token[2].c_str()));
-        midColor.g = static_cast<float>(atof(token[3].c_str()));
-        midColor.b = static_cast<float>(atof(token[4].c_str()));
+        midColor.r = static_cast<float>(atof(token[2].c_str())) / 255.0;
+        midColor.g = static_cast<float>(atof(token[3].c_str())) / 255.0;
+        midColor.b = static_cast<float>(atof(token[4].c_str())) / 255.0;
         midColor.a = static_cast<float>(atof(token[5].c_str()));
     }
     else if (token[0] == "endColor")
@@ -124,9 +125,9 @@ bool ParticleDescriptor::ParseLine(vector<ci_string> token)
         assert(token.size() > 5);
         assert(token[1] == "=");
         
-        endColor.r = static_cast<float>(atof(token[2].c_str()));
-        endColor.g = static_cast<float>(atof(token[3].c_str()));
-        endColor.b = static_cast<float>(atof(token[4].c_str()));
+        endColor.r = static_cast<float>(atof(token[2].c_str())) / 255.0;
+        endColor.g = static_cast<float>(atof(token[3].c_str())) / 255.0;
+        endColor.b = static_cast<float>(atof(token[4].c_str())) / 255.0;
         endColor.a = static_cast<float>(atof(token[5].c_str()));
     }
     else if (token[0] == "emissionRate")
@@ -163,7 +164,10 @@ bool ParticleDescriptor::ParseLine(vector<ci_string> token)
         assert(token[1] == "=");
         
         totalLifetimeRandomness = static_cast<float>(atof(token[2].c_str()));
-    }
+	}
+	else if (token[0] == "straight") {
+		straight = static_cast<float>(atof(token[2].c_str())) == 1 ? true : false;
+	}
     else
     {
         fprintf(stderr, "Error loading scene file... token:  %s!", token[0].c_str());

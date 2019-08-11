@@ -7,22 +7,23 @@ using namespace glm;
 FireFX::FireFX()
 {
 #if defined(PLATFORM_OSX)
-	//    int billboardTextureID = TextureLoader::LoadTexture("Textures/BillboardTest.bmp");
-	int billboardTextureID = TextureLoader::LoadTexture("Textures/Particle.png");
+	int smokeTextureID = TextureLoader::LoadTexture("Textures/Particle.png");
+	int fireTextureID = TextureLoader::LoadTexture("Textures/Particle.png");
 #else
-	//    int billboardTextureID = TextureLoader::LoadTexture("../Assets/Textures/BillboardTest.bmp");
-	int billboardTextureID = TextureLoader::LoadTexture("../Assets/Textures/Particle.png");
+	int smokeTextureID = TextureLoader::LoadTexture("../Assets/Textures/Particle.png");
+	int fireTextureID = TextureLoader::LoadTexture("../Assets/Textures/Particle.png");
 #endif
 
-	assert(billboardTextureID != 0);
+	assert(smokeTextureID != 0);
+	assert(fireTextureID != 0);
 
 	bList = std::vector<BillboardList*>();
 	pSystems = std::vector<ParticleSystem*>();
-	numOfpSystems = 2;
-	for (size_t i = 0; i < numOfpSystems; i++)
-	{
-		bList.push_back(new BillboardList(2048, billboardTextureID));
-	}
+	numOfpSystems = 1;
+
+	bList.push_back(new BillboardList(2048, smokeTextureID));
+	//bList.push_back(new BillboardList(2048, fireTextureID, 3));
+	//bList.push_back(new BillboardList(2048, fireTextureID, 3));
 
 	loadProperties();
 }
@@ -107,7 +108,6 @@ void FireFX::loadProperties()
 
 				pSystems.push_back(new ParticleSystem(emitter, psd, this, id++));
 
-				//id++;
 			}
 			else if (result.empty() == false && result[0] == '#')
 			{
