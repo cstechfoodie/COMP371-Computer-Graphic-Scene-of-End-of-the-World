@@ -12,12 +12,27 @@
 #include "EventManager.h"
 #include "Billboard.h"
 #include "TextureLoader.h"
+#include <GLFW/glfw3.h>
+
+
+
+
+
+
+
+
+
+
+
 
 int main(int argc, char*argv[])
 {
 	EventManager::Initialize();
 	Renderer::Initialize();
+    
 
+
+    
 	World world;    
     
 	if (argc > 1)
@@ -41,7 +56,8 @@ int main(int argc, char*argv[])
 //		world.LoadScene("../Assets/Scenes/CoordinateSystem.scene");
 #endif
 	}
-
+    glfwSetCursorPosCallback(EventManager::GetWindow(), EventManager::mouse_callback);
+    glfwSetMouseButtonCallback(EventManager::GetWindow(), EventManager::mouseButtonCallback);
 	// Main Loop
 	do
 	{
@@ -53,7 +69,9 @@ int main(int argc, char*argv[])
 		world.Update(dt);
 
 		// Draw World
-		world.Draw();        
+		world.Draw();
+
+        
 	}
 	while(EventManager::ExitRequested() == false);
 

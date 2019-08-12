@@ -26,7 +26,8 @@ public:
 
 	static float GetMouseMotionX();
 	static float GetMouseMotionY();
-
+    static void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+    static void mouseButtonCallback(GLFWwindow *window, int button, int action, int mods);
 	static void EnableMouseCursor();
 	static void DisableMouseCursor();
     static float GetRandomFloat(float min, float max);
@@ -42,6 +43,8 @@ private:
 	static double sLastMousePositionY;
 	static float  sMouseDeltaY;
 
+    
 	// Window
 	static GLFWwindow* spWindow;
+    
 };

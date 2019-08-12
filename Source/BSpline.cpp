@@ -73,7 +73,7 @@ void BSpline::Draw()
     glUniformMatrix4fv(WorldMatrixLocation, 1, GL_FALSE, &GetWorldMatrix()[0][0]);
     
     // Draw the triangles !
-    glDrawArrays(GL_LINE_LOOP, 0, mSamplePoints.size());
+    //glDrawArrays(GL_LINE_LOOP, 0, mSamplePoints.size());
 }
 
 bool BSpline::ParseLine(const std::vector<ci_string> &token)

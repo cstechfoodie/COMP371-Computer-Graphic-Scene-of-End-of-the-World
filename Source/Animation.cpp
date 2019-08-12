@@ -12,7 +12,7 @@
 #include "World.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/quaternion.hpp>
-#include <glfw/glfw3.h>
+#include <GLFW/glfw3.h>
 
 #include "Model.h"
 #include "Animation.h"
@@ -141,7 +141,7 @@ void Animation::Draw()
 	glUniformMatrix4fv(WorldMatrixLocation, 1, GL_FALSE, &identity[0][0]);
 
 	// Draw the wireFrame
-	glDrawArrays(GL_LINE_LOOP, 0, mKey.size());
+	//glDrawArrays(GL_LINE_LOOP, 0, mKey.size());
 }
 
 

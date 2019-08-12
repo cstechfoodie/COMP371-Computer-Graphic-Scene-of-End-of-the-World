@@ -21,9 +21,12 @@
 #include <time.h>
 
 using namespace std;
-int width=1000;
+int width=1280;
 int length=760;
-
+double xposition;
+double yposition;
+double button_check = 1186;
+double button_check2 = 1248;
 // Time
 double EventManager::sLastFrameTime = glfwGetTime();
 float  EventManager::sFrameTime = 0.0f;
@@ -33,6 +36,9 @@ double EventManager::sLastMousePositionX = 0.0f;
 float  EventManager::sMouseDeltaX = 0.0f;
 double EventManager::sLastMousePositionY = 0.0f;
 float  EventManager::sMouseDeltaY = 0.0f;
+
+
+
 
 // Window
 GLFWwindow* EventManager::spWindow = nullptr;
@@ -92,6 +98,7 @@ void EventManager::Initialize()
 	// Initial time
 	sLastFrameTime = glfwGetTime();
     srand((unsigned int) time(nullptr));
+    
 }
 
 void EventManager::Shutdown()
@@ -162,5 +169,55 @@ float EventManager::GetRandomFloat(float min, float max)
     return min + value*(max - min);
     
 
+}
+
+void EventManager::mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+    
+    std::cout << xpos << " : " << ypos << std::endl;
+    xposition = xpos;
+    yposition = ypos;
+}
+
+void EventManager::mouseButtonCallback(GLFWwindow *window, int button, int action, int mods)
+{
+    
+    
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS && xposition>button_check && xposition<button_check2 && yposition>22 && yposition<58)
+    {
+        std::cout << "Button 1" << std::endl;
+    }
+    
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS && xposition>button_check && xposition<button_check2 && yposition>135 && yposition<172)
+    {
+        std::cout << "Button 2" << std::endl;
+    }
+    
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS && xposition>button_check && xposition<button_check2 && yposition>247 && yposition<285)
+    {
+        std::cout << "Button 3" << std::endl;
+    }
+    
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS && xposition>button_check && xposition<button_check2 && yposition>362 && yposition<402)
+    {
+        std::cout << "Button 4" << std::endl;
+    }
+    
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS && xposition>button_check && xposition<button_check2 && yposition>475 && yposition<513)
+    {
+        std::cout << "Button 5" << std::endl;
+    }
+    
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS && xposition>button_check && xposition<button_check2 && yposition>587 && yposition<627)
+    {
+        std::cout << "Button 6" << std::endl;
+    }
+    
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS && xposition>button_check && xposition<button_check2 && yposition>702 && yposition<743)
+    {
+        std::cout << "Button 7" << std::endl;
+    }
+    
+   
 }
 
