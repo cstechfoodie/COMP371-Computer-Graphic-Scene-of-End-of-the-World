@@ -142,7 +142,7 @@ void World::Update(float dt)
 		(*it)->Update(dt);
 	}
 
-	for each (auto fire in particles)
+	for(auto fire : particles)
 	{
 		fire->Update(dt);
 	}
@@ -233,7 +233,7 @@ void World::Draw()
     Renderer::CheckForErrors();
     
     // Draw Billboards
-	for each (auto fire in particles)
+	for (auto fire : particles)
 	{
 		fire->Draw();
 	}
