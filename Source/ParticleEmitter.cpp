@@ -35,11 +35,11 @@ glm::vec3 ParticleEmitter::GetPosition()
 	const Camera* cam = World::GetInstance()->GetCurrentCamera();
 	mat4 viewMatrix = cam->GetViewMatrix();
 
-	glm::vec3 position = mPosition;
-
-	if (mpParent != nullptr) {
-		position = vec3(mpParent->GetWorldMatrix()[3][0], mpParent->GetWorldMatrix()[3][1] + 8, mpParent->GetWorldMatrix()[3][2]);
-	}
+    glm::vec3 position = vec3(mpParent->GetWorldMatrix()[3][0], mpParent->GetWorldMatrix()[3][1], mpParent->GetWorldMatrix()[3][2]);
     
     return position;
 }
+
+
+
+

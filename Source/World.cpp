@@ -62,8 +62,7 @@ World::World()
 	mCamera.push_back(new StaticCamera(vec3(0.5f,  0.5f, 5.0f), vec3(0.0f, 0.5f, 0.0f), vec3(0.0f, 1.0f, 0.0f)));
 	mCurrentCamera = 0;
 
-	particles = vector<FireFX*>();
-	FireFX::loadDescriptors();
+	fire1 = new FireFX();
 }
 
 World::~World()
@@ -97,6 +96,7 @@ World::~World()
 	}
 	mCamera.clear();
     
+	delete fire1;
 }
 
 World* World::GetInstance()
@@ -137,15 +137,7 @@ void World::Update(float dt)
 	glUseProgram(Renderer::GetShaderProgramID());
 	glUniformMatrix4fv(viewTransformID, 1, GL_FALSE, &view[0][0]);  
     
-	for (vector<Model*>::iterator it = mModel.begin(); it < mModel.end(); ++it)
-	{
-		(*it)->Update(dt);
-	}
-
-	for each (auto fire in particles)
-	{
-		fire->Update(dt);
-	}
+	fire1->Update(dt);
 }
 
 void World::Draw()
@@ -233,10 +225,7 @@ void World::Draw()
     Renderer::CheckForErrors();
     
     // Draw Billboards
-	for each (auto fire in particles)
-	{
-		fire->Draw();
-	}
+	fire1->Draw();
 
 
 	//for luo
@@ -379,14 +368,13 @@ void World::LoadScene(const char * scene_path)
 				CubeModel* cube = new CubeModel();
 				cube->Load(iss);
 				mModel.push_back(cube);
-
-				if (cube->GetName().length() == 8) {
-					particles.push_back(new FireFX(0, cube));
-				}
-				else {
-					particles.push_back(new FireFX(1, cube));
-				}
 			}
+            else if( result == "sphere" )
+            {
+                SphereModel* sphere = new SphereModel();
+                sphere->Load(iss);
+                mModel.push_back(sphere);
+            }
 			else if ( result == "animationkey" )
 			{
 				AnimationKey* key = new AnimationKey();

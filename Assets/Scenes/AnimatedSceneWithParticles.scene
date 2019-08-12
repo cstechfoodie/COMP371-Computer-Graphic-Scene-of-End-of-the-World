@@ -70,9 +70,9 @@ key      = "KeyCycle1"  time = 8.0f
 [Cube]
 name     = "Ground"
 
-scaling  = 12.0 12.0 10.0
+scaling  = 100.0 100.0 100.0
 
-position = 0.0 -7.0 0.0
+position = 0.0 -50 0.0
 
 rotation = 1.0 0.0 0.0 90.0
 material = 0.05 0.8 0.0 0.0
@@ -82,14 +82,13 @@ attenuation = 0.05 0.02 0.002
 [Cube]
 name     = "Cube"
 
-scaling  = 10.0 7.0 7.0
+scaling  = 1.0 1.0 1.0
 
-position = 7 -5.0 7
+position = 0.0 1.0 0.0
 
-rotation = 0.0 0.0 1.0 90
+rotation = 0.0 0.0 1.0 180
 material = 0.01 0.8 0.3 50.0
 attenuation = 0.05 0.02 0.002
-
 
 [Spline]
 name     = "RollerCoaster"
@@ -109,37 +108,4 @@ controlpoint = 10.0 4.0 5
 controlpoint = 16.0 4.0 2
 controlpoint = 26.0 10.0 2
 controlpoint = 30.0 20.0 30.0
-
-[Cube]
-name     = "Cube"
-
-scaling  = 10.0 7.0 7.0
-
-position = -7 -5.0 7
-
-rotation = 0.0 0.0 1.0 90
-material = 0.01 0.8 0.3 50.0
-attenuation = 0.05 0.02 0.002
-
-[Cube]
-name     = "Cube"
-
-scaling  = 10.0 7.0 7.0
-
-position = -7 -5.0 -7
-
-rotation = 0.0 0.0 1.0 90
-material = 0.01 0.8 0.3 50.0
-attenuation = 0.05 0.02 0.002
-
-[Cube]
-name     = "Cube"
-
-scaling  = 10.0 7.0 7.0
-
-position = 7 -5.0 -7
-
-rotation = 0.0 0.0 1.0 90
-material = 0.01 0.8 0.3 50.0
-attenuation = 0.05 0.02 0.002
 
