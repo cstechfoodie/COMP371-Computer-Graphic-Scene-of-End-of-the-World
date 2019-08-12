@@ -33,7 +33,10 @@ using namespace std;
 using namespace glm;
 
 World* World::instance;
-
+extern int button_5;
+extern int button_4;
+extern int button_2;
+extern int button_1;
 //const vec4 lightPosition(0.0f, 10.0f, 20.0f,1.0f);//add a point light here
 //const vec3 lightColor(1.0f, 1.0f, 1.0f);
 
@@ -44,6 +47,8 @@ vec3 lightColors[5] = {
 	vec3(0.5f,0.5,0.5f),
 	vec3(1.0f,0.0f,0.0f)
 };
+
+
 vec4 lightPositions[5] = {
 	vec4(0.0f, 10.0f, 20.0f,1.0f),
 	vec4(0.0f, 10.0f, -20.0f,1.0f),
@@ -63,10 +68,7 @@ World::World()
 	mCurrentCamera = 0;
 
 	particles = vector<FireFX*>();
-	
     FireFX::loadDescriptors();
-    
-
 }
 
 World::~World()
@@ -129,6 +131,8 @@ void World::Update(float dt)
 			mCurrentCamera = 2;
 		}
 	}
+    
+
 
 	// Update current Camera
 	mCamera[mCurrentCamera]->Update(dt);
@@ -180,7 +184,9 @@ void World::Draw()
 	//GLuint LightColorID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightColor");
 	GLuint LightAttenuationID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightAttenuation");
 	GLuint MaterialID = glGetUniformLocation(Renderer::GetShaderProgramID(), "materialCoefficients");
-
+    
+    
+    if(button_5==1){
 	for (vector<Model*>::iterator it = mModel.begin(); it < mModel.end(); ++it)
 	{	
 		// Get a handle for Light Attributes uniform
@@ -205,7 +211,89 @@ void World::Draw()
 		
 		(*it)->Draw();
 	}
+    }
+    
+    if(button_4==1){
+        for (vector<Model*>::iterator it = mModel.begin(); it < mModel.end(); ++it)
+        {
+            // Get a handle for Light Attributes uniform
+            //glUniform4f(LightPositionID, lightPosition.x, lightPosition.y, lightPosition.z, lightPosition.w);
+            //glUniform3f(LightColorID, lightColor.r, lightColor.g, lightColor.b);
+            glUniform4f(LightPosition1ID, lightPositions[0].x, lightPositions[0].y, lightPositions[0].z, lightPositions[0].w);
+            glUniform4f(LightPosition2ID, lightPositions[1].x, lightPositions[1].y, lightPositions[1].z, lightPositions[1].w);
+            glUniform4f(LightPosition3ID, lightPositions[2].x, lightPositions[2].y, lightPositions[2].z, lightPositions[2].w);
+            glUniform4f(LightPosition4ID, lightPositions[3].x, lightPositions[3].y, lightPositions[3].z, lightPositions[3].w);
+            glUniform4f(LightPosition5ID, lightPositions[4].x, lightPositions[4].y, lightPositions[4].z, lightPositions[4].w);
+            glUniform3f(LightColor1ID, lightColors[0].r, lightColors[0].g, lightColors[0].b);
+            glUniform3f(LightColor2ID, lightColors[0].r, lightColors[0].g, lightColors[0].b);
+            glUniform3f(LightColor3ID, lightColors[0].r, lightColors[0].g, lightColors[0].b);
+            glUniform3f(LightColor4ID, lightColors[0].r, lightColors[0].g, lightColors[0].b);
+            glUniform3f(LightColor5ID, lightColors[0].r, lightColors[0].g, lightColors[0].b);
+            // Get a handle for Material Attributes uniform
+            vec4 material = mModel[1]->GetMaterial();
+            
+            glUniform4f(MaterialID, material.x, material.y, material.z, material.w);
+            vec3 attenuation = (*it)->GetAttenuation();
+            glUniform3f(LightAttenuationID,attenuation.x, attenuation.y, attenuation.z);
+            
+            (*it)->Draw();
+        }
+    }
 
+    if(button_1==1){
+        for (vector<Model*>::iterator it = mModel.begin(); it < mModel.end(); ++it)
+        {
+            // Get a handle for Light Attributes uniform
+            //glUniform4f(LightPositionID, lightPosition.x, lightPosition.y, lightPosition.z, lightPosition.w);
+            //glUniform3f(LightColorID, lightColor.r, lightColor.g, lightColor.b);
+            glUniform4f(LightPosition1ID, lightPositions[1].x, lightPositions[1].y, lightPositions[1].z, lightPositions[0].w);
+            glUniform4f(LightPosition2ID, lightPositions[0].x, lightPositions[0].y, lightPositions[0].z, lightPositions[1].w);
+            glUniform4f(LightPosition3ID, lightPositions[4].x, lightPositions[4].y, lightPositions[4].z, lightPositions[2].w);
+            glUniform4f(LightPosition4ID, lightPositions[3].x, lightPositions[3].y, lightPositions[3].z, lightPositions[3].w);
+            glUniform4f(LightPosition5ID, lightPositions[2].x, lightPositions[2].y, lightPositions[2].z, lightPositions[4].w);
+            glUniform3f(LightColor1ID, lightColors[0].r, lightColors[0].g, lightColors[0].b);
+            glUniform3f(LightColor2ID, lightColors[1].r, lightColors[1].g, lightColors[1].b);
+            glUniform3f(LightColor3ID, lightColors[2].r, lightColors[2].g, lightColors[2].b);
+            glUniform3f(LightColor4ID, lightColors[3].r, lightColors[3].g, lightColors[3].b);
+            glUniform3f(LightColor5ID, lightColors[4].r, lightColors[4].g, lightColors[4].b);
+            // Get a handle for Material Attributes uniform
+            vec4 material = mModel[1]->GetMaterial();
+            
+            glUniform4f(MaterialID, material.x, material.y, material.z, material.w);
+            vec3 attenuation = (*it)->GetAttenuation();
+            glUniform3f(LightAttenuationID,attenuation.x, attenuation.y, attenuation.z);
+            
+            (*it)->Draw();
+        }
+    }
+    
+    if(button_2==1){
+        for (vector<Model*>::iterator it = mModel.begin(); it < mModel.end(); ++it)
+        {
+            // Get a handle for Light Attributes uniform
+            //glUniform4f(LightPositionID, lightPosition.x, lightPosition.y, lightPosition.z, lightPosition.w);
+            //glUniform3f(LightColorID, lightColor.r, lightColor.g, lightColor.b);
+            glUniform4f(LightPosition1ID, lightPositions[0].x, lightPositions[0].y, lightPositions[0].z, lightPositions[0].w);
+            glUniform4f(LightPosition2ID, lightPositions[1].x, lightPositions[1].y, lightPositions[1].z, lightPositions[1].w);
+            glUniform4f(LightPosition3ID, lightPositions[2].x, lightPositions[2].y, lightPositions[2].z, lightPositions[2].w);
+            glUniform4f(LightPosition4ID, lightPositions[3].x, lightPositions[3].y, lightPositions[3].z, lightPositions[3].w);
+            glUniform4f(LightPosition5ID, lightPositions[4].x, lightPositions[4].y, lightPositions[4].z, lightPositions[4].w);
+            glUniform3f(LightColor1ID, lightColors[0].r, lightColors[0].g, lightColors[0].b);
+            glUniform3f(LightColor2ID, lightColors[0].r, lightColors[1].g, lightColors[0].b);
+            glUniform3f(LightColor3ID, lightColors[0].r, lightColors[2].g, lightColors[0].b);
+            glUniform3f(LightColor4ID, lightColors[0].r, lightColors[3].g, lightColors[0].b);
+            glUniform3f(LightColor5ID, lightColors[0].r, lightColors[4].g, lightColors[0].b);
+            // Get a handle for Material Attributes uniform
+            vec4 material = mModel[1]->GetMaterial();
+            
+            glUniform4f(MaterialID, material.x, material.y, material.z, material.w);
+            vec3 attenuation = (*it)->GetAttenuation();
+            glUniform3f(LightAttenuationID,attenuation.x, attenuation.y, attenuation.z);
+            
+            (*it)->Draw();
+        }
+    }
+    
 	// Draw Path Lines
 	
 	// Set Shader for path lines

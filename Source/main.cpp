@@ -15,7 +15,7 @@
 #include <GLFW/glfw3.h>
 
 
-
+extern int button_3;
 
 
 
@@ -67,11 +67,13 @@ int main(int argc, char*argv[])
 
 		// Update World
 		float dt = EventManager::GetFrameTime();
-		world.Update(dt);
-
+        if(button_3>0){
+        world.Update(dt);
+        }
 		// Draw World
+     
 		world.Draw();
-
+        
         
 	}
 	while(EventManager::ExitRequested() == false);

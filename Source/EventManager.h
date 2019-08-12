@@ -21,7 +21,7 @@ public:
 
 	static float GetFrameTime();
 	static bool ExitRequested();
-
+    
 	static GLFWwindow* GetWindow();
 
 	static float GetMouseMotionX();

@@ -39,8 +39,8 @@ void FirstPersonCamera::Update(float dt)
 	// - Don't forget to use dt to control the speed of the camera motion
 
 	// Mouse motion to get the variation in angle
-	mHorizontalAngle -= EventManager::GetMouseMotionX() * mAngularSpeed * dt*3;
-	mVerticalAngle   -= EventManager::GetMouseMotionY() * mAngularSpeed * dt*3;
+	mHorizontalAngle -= EventManager::GetMouseMotionX() * mAngularSpeed * dt*2;
+	mVerticalAngle   -= EventManager::GetMouseMotionY() * mAngularSpeed * dt*2;
 
 	// Clamp vertical angle to [-85, 85] degrees
 	mVerticalAngle = std::max(-85.0f, std::min(85.0f, mVerticalAngle));

@@ -21,17 +21,13 @@
 #include <time.h>
 
 using namespace std;
-int width=1280;
-int length=760;
+
 double xposition;
 double yposition;
 double button_check = 1186;
 double button_check2 = 1248;
-int button_5=0;
-int button_4=0;
-int button_3=0;
-int button_2=0;
-int button_1=0;
+int button_5;
+
 // Time
 double EventManager::sLastFrameTime = glfwGetTime();
 float  EventManager::sFrameTime = 0.0f;
@@ -80,7 +76,7 @@ void EventManager::Initialize()
     
 	// Open a window and create its OpenGL context
 	glfwWindowHint(GLFW_RESIZABLE, 0);
-	spWindow = glfwCreateWindow(width, length, "COMP371 - Assignment Framework", nullptr, nullptr);
+	spWindow = glfwCreateWindow(1280, 760, "COMP371 - Assignment Framework", nullptr, nullptr);
 
 	if (spWindow == nullptr)
 	{
@@ -152,6 +148,11 @@ float EventManager::GetMouseMotionX()
 	return sMouseDeltaX;
 }
 
+int EventManager::GetButtonFive()
+{
+    return button_5;
+}
+
 float EventManager::GetMouseMotionY()
 {
 	return sMouseDeltaY;
@@ -191,32 +192,28 @@ void EventManager::mouseButtonCallback(GLFWwindow *window, int button, int actio
     
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS && xposition>button_check && xposition<button_check2 && yposition>22 && yposition<58)
     {
-        button_1=1;
         std::cout << "Button 1" << std::endl;
     }
     
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS && xposition>button_check && xposition<button_check2 && yposition>135 && yposition<172)
     {
-        button_2=1;
         std::cout << "Button 2" << std::endl;
     }
     
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS && xposition>button_check && xposition<button_check2 && yposition>247 && yposition<285)
     {
-        button_3=1;
         std::cout << "Button 3" << std::endl;
     }
     
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS && xposition>button_check && xposition<button_check2 && yposition>362 && yposition<402)
     {
-        button_4=1;
         std::cout << "Button 4" << std::endl;
     }
     
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS && xposition>button_check && xposition<button_check2 && yposition>475 && yposition<513)
     {
         button_5=1;
-        std::cout << "Button 5:"<< button_5 << std::endl;
+        std::cout << "Button 5:" << button_5 << std::endl;
     }
     
     if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
