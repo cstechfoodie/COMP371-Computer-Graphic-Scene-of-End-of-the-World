@@ -155,6 +155,7 @@ float EventManager::GetMouseMotionY()
 void EventManager::EnableMouseCursor()
 {
 	glfwSetInputMode(spWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    EventManager::Update();
 }
 
 void EventManager::DisableMouseCursor()
@@ -208,14 +209,14 @@ void EventManager::mouseButtonCallback(GLFWwindow *window, int button, int actio
         std::cout << "Button 5" << std::endl;
     }
     
-    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS && xposition>button_check && xposition<button_check2 && yposition>587 && yposition<627)
+    if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS)
     {
-        std::cout << "Button 6" << std::endl;
+        EventManager::EnableMouseCursor();
     }
     
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS && xposition>button_check && xposition<button_check2 && yposition>702 && yposition<743)
     {
-        std::cout << "Button 7" << std::endl;
+        EventManager::DisableMouseCursor();
     }
     
    

@@ -19,7 +19,7 @@ using namespace std;
 
 using namespace glm;
 
-FirstPersonCamera::FirstPersonCamera(glm::vec3 position) :  Camera(), mPosition(position), mPositionCache(position), mLookAt(0.0f, 0.0f, -1.0f), mHorizontalAngle(90.0f), mVerticalAngle(0.0f), mSpeed(5.0f), mAngularSpeed(2.5f), mSkakeFlag(false)
+FirstPersonCamera::FirstPersonCamera(glm::vec3 position) :  Camera(), mPosition(position), mPositionCache(position), mLookAt(0.0f, 0.0f, -1.0f), mHorizontalAngle(90.0f), mVerticalAngle(0.0f), mSpeed(15.0f), mAngularSpeed(2.5f), mSkakeFlag(false)
 {
 }
 
@@ -39,8 +39,8 @@ void FirstPersonCamera::Update(float dt)
 	// - Don't forget to use dt to control the speed of the camera motion
 
 	// Mouse motion to get the variation in angle
-	mHorizontalAngle -= EventManager::GetMouseMotionX() * mAngularSpeed * dt;
-	mVerticalAngle   -= EventManager::GetMouseMotionY() * mAngularSpeed * dt;
+	mHorizontalAngle -= EventManager::GetMouseMotionX() * mAngularSpeed * dt*3;
+	mVerticalAngle   -= EventManager::GetMouseMotionY() * mAngularSpeed * dt*3;
 
 	// Clamp vertical angle to [-85, 85] degrees
 	mVerticalAngle = std::max(-85.0f, std::min(85.0f, mVerticalAngle));

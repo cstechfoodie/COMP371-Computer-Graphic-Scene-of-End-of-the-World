@@ -58,7 +58,8 @@ int main(int argc, char*argv[])
 	}
     glfwSetCursorPosCallback(EventManager::GetWindow(), EventManager::mouse_callback);
     glfwSetMouseButtonCallback(EventManager::GetWindow(), EventManager::mouseButtonCallback);
-	// Main Loop
+	
+    // Main Loop
 	do
 	{
 		// Update Event Manager - Frame time / input / events processing 
