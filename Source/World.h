@@ -33,12 +33,19 @@ public:
 
 	void Update(float dt);
 	void Draw();
-
+    struct Vertex
+    {
+        glm::vec3 position;
+        glm::vec3 normal;
+        glm::vec3 color;
+    };
+    int sizeX;
+    int sizeZ;
 	void LoadScene(const char * scene_path);
     Animation* FindAnimation(ci_string animName);
     AnimationKey* FindAnimationKey(ci_string keyName);
     ParticleDescriptor* FindParticleDescriptor(ci_string name);
-
+ void genWaterSurface(World::Vertex * vertexArray[], int resolutionX, int resolutionZ, float t);
     const Camera* GetCurrentCamera() const;
 
 private:

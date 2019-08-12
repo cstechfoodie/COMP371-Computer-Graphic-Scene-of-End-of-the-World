@@ -50,6 +50,8 @@ vec4 lightPositions[5] = {
 	vec4(5.0f, 15.0f, 20.0f,1.0f)
 };
 
+World::Vertex vertexBuffer[4852];
+
 World::World()
 {
     instance = this;
@@ -59,7 +61,8 @@ World::World()
 	mCamera.push_back(new StaticCamera(vec3(3.0f, 30.0f, 5.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f)));
 	mCamera.push_back(new StaticCamera(vec3(0.5f,  0.5f, 5.0f), vec3(0.0f, 0.5f, 0.0f), vec3(0.0f, 1.0f, 0.0f)));
 	mCurrentCamera = 0;
-
+    sizeX = 50;
+    sizeZ = 50;
 	fire1 = new FireFX();
 }
 
@@ -129,6 +132,9 @@ void World::Update(float dt)
 	mCamera[mCurrentCamera]->Update(dt);
 	//get view matrix
 	mat4 view=mCamera[mCurrentCamera]->GetViewMatrix();
+    
+    // Update Water Shader
+    World::genWaterSurface(vertexBuffer, 25, 25, dt);
 	
 	GLuint viewTransformID = glGetUniformLocation(Renderer::GetShaderProgramID(), "viewTransform");
 
@@ -257,11 +263,77 @@ void World::Draw()
 	//glBindVertexArray(tVAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
 	//						 //						 //glDrawArrays(GL_TRIANGLES, 0, 6);
 	//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, sizeof(vertexBuffer) / sizeof(Vertex));
+    
 
 	// Restore previous shader
 	Renderer::SetShader((ShaderType) prevShader);
 
 	Renderer::EndFrame();
+}
+
+void genWaterSurface(World::Vertex vertexArray[], int resolutionX, int resolutionZ, float t) {
+    
+    // generate the wave surface
+    // generate all the points
+    World::Vertex WaterSurfaceVertexBuffer[resolutionX * resolutionZ];
+    for(int z=0; z<resolutionZ; z++){
+        for(int x = 0; x < resolutionX; x++){
+            WaterSurfaceVertexBuffer[z*resolutionX+x] = {vec3(x - (resolutionX/2),
+                                                              (sin((float)z/2.0 + t) + sin((float)x/4.2 + t)) * 0.5+30,
+                                                              z - (resolutionZ /2)),
+                vec3(0,0,0),
+                vec3(0,0,1)};
+        }
+    }
+    
+    // calculate the normals
+    // every time we generate a new water, we need all the normals to point perpendicularly to the surface
+    // so the light bounces on the surface, we can calculate reflection.
+    // each points has a normal
+    for(int z=1; z<resolutionZ-1; z++){
+        for(int x = 1; x < resolutionX-1; x++){
+            vec3 center = WaterSurfaceVertexBuffer[z*resolutionX+x].position;
+            vec3 left = WaterSurfaceVertexBuffer[z*resolutionX+x-1].position;
+            vec3 right = WaterSurfaceVertexBuffer[z*resolutionX+x+1].position;
+            vec3 back = WaterSurfaceVertexBuffer[(z-1)*resolutionX+x].position;
+            vec3 front = WaterSurfaceVertexBuffer[(z+1)*resolutionX+x].position;
+            
+            left = left - center;
+            right = right - center;
+            back = back - center;
+            front = front - center;
+            
+            WaterSurfaceVertexBuffer[z*resolutionX+x].normal = normalize( glm::cross(back, left) +
+                                                                         glm::cross(right, back) +
+                                                                         glm::cross(front, right) +
+                                                                         glm::cross(left, front));
+            
+        }
+    }
+    printf("%f, ", WaterSurfaceVertexBuffer[2*resolutionX+2].normal.y);
+    
+    int k = 1;
+    for(int i=0; i<resolutionZ-1; i++){
+        // go back to calculate the strip
+        k--;
+        for(int j=0; j<resolutionX; j++) {
+            // logic to link all the points together in triangles shapes
+            // to construct the triangle strip.
+            if ((i % 2) == 0) {
+                vertexArray[k] = WaterSurfaceVertexBuffer[(( i    * resolutionX) + j)];
+                k++;
+                vertexArray[k] = WaterSurfaceVertexBuffer[(((i+1) * resolutionX) + j)];
+                k++;
+            } else {
+                vertexArray[k] = WaterSurfaceVertexBuffer[(( i    * resolutionX) + resolutionX - j - 1)];
+                k++;
+                vertexArray[k] = WaterSurfaceVertexBuffer[(((i+1) * resolutionX) + resolutionX - j - 1)];
+                k++;
+            }
+        }
+    }
 }
 
 void World::LoadScene(const char * scene_path)

@@ -95,6 +95,13 @@ void Renderer::Initialize()
 		LoadShaders(shaderPathPrefix + "square.vertexshader",
 			shaderPathPrefix + "square.fragmentshader")
 	);
+    
+    sShaderProgramID.push_back(
+                               LoadShaders(shaderPathPrefix + "Water.vertexshader",
+                                           shaderPathPrefix + "Water.fragmentshader")
+                               );
+    
+    
 
 	sCurrentShader = 0;
 
