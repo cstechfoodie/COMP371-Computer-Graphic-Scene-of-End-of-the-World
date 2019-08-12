@@ -7,8 +7,8 @@ using namespace glm;
 FireFX::FireFX()
 {
 #if defined(PLATFORM_OSX)
-	int smokeTextureID = TextureLoader::LoadTexture("Textures/soft_fire_3x3.png");
-	int fireTextureID = TextureLoader::LoadTexture("Textures/soft_fire_3x3.png");
+	int smokeTextureID = TextureLoader::LoadTexture("Textures/fire_cutout_2x2.png");
+	int fireTextureID = TextureLoader::LoadTexture("Textures/fire_cutout_2x2.png");
 #else
 	int smokeTextureID = TextureLoader::LoadTexture("../Assets/Textures/fire_cutout_2x2.png");
 	int fireTextureID = TextureLoader::LoadTexture("../Assets/Textures/fire_cutout_2x2.png");
@@ -67,8 +67,15 @@ void FireFX::loadProperties()
 {
 	// Using case-insensitive strings and streams for easier parsing
 
-	string particle_path = "../Assets/Scenes/FireFx.scene";
+	string particle_path;
 
+#if defined(PLATFORM_OSX)
+    particle_path = "Scenes/FireFx.scene";
+#else
+    particle_path = "../Assets/Scenes/FireFx.scene";
+#endif
+    
+    
 	ci_ifstream input;
 	input.open(particle_path, ios::in);
 
@@ -77,7 +84,7 @@ void FireFX::loadProperties()
 	// Invalid file
 	if (input.fail())
 	{
-		fprintf(stderr, "Error loading file: %s\n", particle_path);
+		//fprintf(stderr, "Error loading file: %s\n", particle_path);
 		getchar();
 		exit(-1);
 	}
