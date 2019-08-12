@@ -33,6 +33,8 @@
 		03DA72D222B02FC5009C7A21 /* libGLEW.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 03DA72D122B02FC5009C7A21 /* libGLEW.a */; };
 		03FE4ED41B2FA1210020F06F /* Scenes in CopyFiles */ = {isa = PBXBuildFile; fileRef = 03FE4ED21B2FA1010020F06F /* Scenes */; };
 		03FE4ED51B2FA1210020F06F /* Shaders in CopyFiles */ = {isa = PBXBuildFile; fileRef = 03FE4ED31B2FA1010020F06F /* Shaders */; };
+		B5C2AE0A2300EC190075FC3E /* BSpline.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5C2AE092300EC190075FC3E /* BSpline.cpp */; };
+		B5C2AE0C2300EDCF0075FC3E /* BSplineCamera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5C2AE0B2300EDCF0075FC3E /* BSplineCamera.cpp */; };
 		BE6DBEC42300E90A00AD2988 /* FireFX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE6DBEC32300E90A00AD2988 /* FireFX.cpp */; };
 /* End PBXBuildFile section */
 
@@ -96,6 +98,10 @@
 		03DA72D122B02FC5009C7A21 /* libGLEW.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libGLEW.a; path = "../ThirdParty/glew-2.1.0/lib/osx/libGLEW.a"; sourceTree = "<group>"; };
 		03FE4ED21B2FA1010020F06F /* Scenes */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Scenes; path = ../Assets/Scenes; sourceTree = "<group>"; };
 		03FE4ED31B2FA1010020F06F /* Shaders */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Shaders; path = ../Assets/Shaders; sourceTree = "<group>"; };
+		B5C2AE082300EC100075FC3E /* BSpline.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = BSpline.hpp; sourceTree = "<group>"; };
+		B5C2AE092300EC190075FC3E /* BSpline.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BSpline.cpp; sourceTree = "<group>"; };
+		B5C2AE0B2300EDCF0075FC3E /* BSplineCamera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BSplineCamera.cpp; sourceTree = "<group>"; };
+		B5C2AE0D2300EDF40075FC3E /* BSplineCamera.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BSplineCamera.h; sourceTree = "<group>"; };
 		BE6DBEC22300E90A00AD2988 /* FireFX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FireFX.h; sourceTree = "<group>"; };
 		BE6DBEC32300E90A00AD2988 /* FireFX.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FireFX.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -164,6 +170,10 @@
 		038B785E1A6EB3F500111E36 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				B5C2AE0D2300EDF40075FC3E /* BSplineCamera.h */,
+				B5C2AE0B2300EDCF0075FC3E /* BSplineCamera.cpp */,
+				B5C2AE092300EC190075FC3E /* BSpline.cpp */,
+				B5C2AE082300EC100075FC3E /* BSpline.hpp */,
 				BE6DBEC32300E90A00AD2988 /* FireFX.cpp */,
 				BE6DBEC22300E90A00AD2988 /* FireFX.h */,
 				0321758422D7005B00DF6CEA /* Animation.cpp */,
@@ -266,7 +276,9 @@
 				0321759422D7005B00DF6CEA /* StaticCamera.cpp in Sources */,
 				0321759122D7005B00DF6CEA /* World.cpp in Sources */,
 				0321759A22D7005B00DF6CEA /* Camera.cpp in Sources */,
+				B5C2AE0C2300EDCF0075FC3E /* BSplineCamera.cpp in Sources */,
 				0321759922D7005B00DF6CEA /* Animation.cpp in Sources */,
+				B5C2AE0A2300EC190075FC3E /* BSpline.cpp in Sources */,
 				0321759E22D7005B00DF6CEA /* Renderer.cpp in Sources */,
 				0321759C22D7005B00DF6CEA /* ParticleEmitter.cpp in Sources */,
 				0321759522D7005B00DF6CEA /* CubeModel.cpp in Sources */,

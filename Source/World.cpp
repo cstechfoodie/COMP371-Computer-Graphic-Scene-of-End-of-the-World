@@ -26,6 +26,8 @@
 #include "ParticleEmitter.h"
 #include "ParticleSystem.h"
 
+#include "BSpline.hpp"
+#include "BSplineCamera.h"
 
 using namespace std;
 using namespace glm;
@@ -311,6 +313,17 @@ void World::LoadScene(const char * scene_path)
 				anim->Load(iss);
 				mAnimation.push_back(anim);
 			}
+            else if (result == "spline")
+            {
+                BSpline* spline = new BSpline();
+                spline->Load(iss);
+                spline->CreateVertexBuffer();
+                
+                // FIXME: This is hardcoded: replace last camera with spline camera
+                mSpline.push_back(spline);
+                mCamera.pop_back();
+                mCamera.push_back(new BSplineCamera(spline, 10.0f));
+            }
 			else if ( result.empty() == false && result[0] == '#')
 			{
 				// this is a comment line

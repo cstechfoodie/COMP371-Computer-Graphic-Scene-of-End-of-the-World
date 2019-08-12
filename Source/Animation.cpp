@@ -64,6 +64,10 @@ Animation::~Animation()
 
 void Animation::CreateVertexBuffer()
 {
+    for (int i=0; i<(int)mKey.size(); ++i)
+    {
+        spline.AddControlPoint(mKey[i].GetPosition());
+    }
     // This is just to display lines between the animation keys
     for (int i=0; i<(int)mKey.size(); ++i)
     {
@@ -127,6 +131,8 @@ void Animation::Draw()
     // Notes:
     // The shader is bound in World.cpp and the ViewProjection Matrix uniform is set there...
 	// The Model View Projection transforms are computed in the Vertex Shader
+    spline.Draw();
+    
 	mat4 identity(1.0f);
 	glBindVertexArray(mVAO);
 	glBindBuffer(GL_ARRAY_BUFFER, mVBO);
@@ -213,45 +219,74 @@ glm::mat4 Animation::GetAnimationWorldMatrix() const
     //           Finally concatenate the interpolated transforms into a single
     //           world transform and return it.
     
-    mat4 worldMatrix(1.0f);
-
-	float currentPosition = mCurrentTime;
-
-	while (currentPosition > mKeyTime[mKeyTime.size() - 1])
-	{
-		currentPosition -= mKeyTime[mKeyTime.size() - 1];
-	}
-
-	int startFrame = 0;
-
-	for (int i = 0; i < mKeyTime.size(); i++)
-	{
-		if (mCurrentTime > mKeyTime[i])
-		{
-			startFrame = i;
-		}
-	}
-
-	if (startFrame == mKeyTime.size() - 1)
-	{
-		startFrame = 0;
-	}
-
-	int endFrame = startFrame + 1;
-
-	float duration = mKeyTime[1] - mKeyTime[0];
-	
-	float t = (mCurrentTime - mKeyTime[startFrame]) / duration;
-
-	glm::quat q1 = angleAxis(radians(mKey[startFrame].GetRotationAngle()), mKey[startFrame].GetRotationAxis());
-	glm::quat q2 = angleAxis(radians(mKey[endFrame].GetRotationAngle()), mKey[endFrame].GetRotationAxis());
-	glm::quat q = slerp(q1, q2, t);
-	
-	mat4 scaleMatrix = scale(mat4(1.0f), mix(mKey[startFrame].GetScaling(), mKey[endFrame].GetScaling(), t));
-	mat4 translateMatrix = translate(mat4(1.0f), mix(mKey[startFrame].GetPosition(), mKey[endFrame].GetPosition(), t));
-	mat4 rotateMatrix = toMat4(q);
-
-	worldMatrix = translateMatrix * rotateMatrix * scaleMatrix;
-
-	return worldMatrix;
+//    mat4 worldMatrix(1.0f);
+//
+//    float currentPosition = mCurrentTime;
+//
+//    while (currentPosition > mKeyTime[mKeyTime.size() - 1])
+//    {
+//        currentPosition -= mKeyTime[mKeyTime.size() - 1];
+//    }
+//
+//    int startFrame = 0;
+//
+//    for (int i = 0; i < mKeyTime.size(); i++)
+//    {
+//        if (mCurrentTime > mKeyTime[i])
+//        {
+//            startFrame = i;
+//        }
+//    }
+//
+//    if (startFrame == mKeyTime.size() - 1)
+//    {
+//        startFrame = 0;
+//    }
+//
+//    int endFrame = startFrame + 1;
+//
+//    float duration = mKeyTime[1] - mKeyTime[0];
+//    
+//    float t = (mCurrentTime - mKeyTime[startFrame]) / duration;
+//
+//    glm::quat q1 = angleAxis(radians(mKey[startFrame].GetRotationAngle()), mKey[startFrame].GetRotationAxis());
+//    glm::quat q2 = angleAxis(radians(mKey[endFrame].GetRotationAngle()), mKey[endFrame].GetRotationAxis());
+//    glm::quat q = slerp(q1, q2, t);
+//    
+//    mat4 scaleMatrix = scale(mat4(1.0f), mix(mKey[startFrame].GetScaling(), mKey[endFrame].GetScaling(), t));
+//    mat4 translateMatrix = translate(mat4(1.0f), mix(mKey[startFrame].GetPosition(), mKey[endFrame].GetPosition(), t));
+//    mat4 rotateMatrix = toMat4(q);
+//
+//    worldMatrix = translateMatrix * rotateMatrix * scaleMatrix;
+//
+//    return worldMatrix;
+    
+    
+    glm::mat4 rotationMatrix;
+    
+    int key1 = 0, key2 = 0;
+    float normalizedTime = 0.0f;
+    
+    for(int i = 1; i < (int)mKey.size(); ++i){
+        if(mCurrentTime < mKeyTime[i]){
+            key1 = i - 1;
+            key2 = i;
+            normalizedTime = (mCurrentTime - mKeyTime[key1]) / (mKeyTime[key2] - mKeyTime[key1]);
+            break;
+        }
+    }
+    
+    vec3 position = spline.GetPosition(key1 + normalizedTime);
+    
+    vec3 scaling = glm::mix(mKey[key1].mScaling, mKey[key2].mScaling, normalizedTime);
+    
+    quat q_f = angleAxis(glm::radians(mKey[key1].mRotationAngleInDegrees), mKey[key1].mRotationAxis);
+    quat q_c = angleAxis(glm::radians(mKey[key2].mRotationAngleInDegrees), mKey[key2].mRotationAxis);
+    quat q = slerp(q_f, q_c, normalizedTime);
+    rotationMatrix = glm::mat4_cast(q);
+    
+    mat4 t = glm::translate(mat4(1.0f), position);
+    mat4 s = glm::scale(mat4(1.0f), scaling);
+    
+    return t * rotationMatrix * s;
 }
