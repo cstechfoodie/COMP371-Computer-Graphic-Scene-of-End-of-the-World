@@ -30,7 +30,7 @@
 class FireFX
 {
 public:
-	FireFX();
+	FireFX(int type, Model* parent = nullptr);
 	~FireFX();
 
 	void Update(float dt);
@@ -39,8 +39,12 @@ public:
 	std::vector<ParticleSystem*> pSystems;
 	std::vector<BillboardList*> bList;
 
+	static void loadDescriptors();
+
 private:
-	void loadProperties();
 	Model* parent;
 	unsigned int numOfpSystems;
+
+	static std::vector<ParticleDescriptor> descriptors;
+	int id;
 };
