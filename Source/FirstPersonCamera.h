@@ -19,14 +19,26 @@ public:
 	virtual void Update(float dt);
 
 	virtual glm::mat4 GetViewMatrix() const;
+    
+    virtual void CameraSkake(float dt);
+    
+    virtual void ToggleShakeFlag();
+    virtual void SetShakeFlag(bool flag);
 
 private:
-	glm::vec3 mPosition;	
+	glm::vec3 mPosition;
+    glm::vec3 mPositionCache;
 	float mHorizontalAngle; // horizontal angle
 	float mVerticalAngle;   // vertical angle
 
 	float mSpeed;			// World units per second
 	float mAngularSpeed;    // Degrees per pixel
+    
+    bool mSkakeFlag;
+    
+    float mAmplitude = 5.0f;
+    float mAdjustAmplitudePerSecond = -1.0f;
+    float mTimeElapsed = 0.0f;
 
 	glm::vec3 mLookAt;
 };

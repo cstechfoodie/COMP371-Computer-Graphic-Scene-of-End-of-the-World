@@ -14,11 +14,12 @@
 #include <GLFW/glfw3.h>
 #include <algorithm>
 
-
+#include <iostream>
+using namespace std;
 
 using namespace glm;
 
-FirstPersonCamera::FirstPersonCamera(glm::vec3 position) :  Camera(), mPosition(position), mLookAt(0.0f, 0.0f, -1.0f), mHorizontalAngle(90.0f), mVerticalAngle(0.0f), mSpeed(5.0f), mAngularSpeed(2.5f)
+FirstPersonCamera::FirstPersonCamera(glm::vec3 position) :  Camera(), mPosition(position), mPositionCache(position), mLookAt(0.0f, 0.0f, -1.0f), mHorizontalAngle(90.0f), mVerticalAngle(0.0f), mSpeed(5.0f), mAngularSpeed(2.5f), mSkakeFlag(false)
 {
 }
 
@@ -59,30 +60,64 @@ void FirstPersonCamera::Update(float dt)
 	
 	vec3 sideVector = glm::cross(mLookAt, vec3(0.0f, 1.0f, 0.0f));
 	glm::normalize(sideVector);
-
-	// A S D W for motion along the camera basis vectors
-	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_W ) == GLFW_PRESS)
-	{
-		mPosition += mLookAt * dt * mSpeed;
-	}
-
-	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_S ) == GLFW_PRESS)
-	{
-		mPosition -= mLookAt * dt * mSpeed;
-	}
-
-	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_D ) == GLFW_PRESS)
-	{
-		mPosition += sideVector * dt * mSpeed;
-	}
-
-	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_A ) == GLFW_PRESS)
-	{
-		mPosition -= sideVector * dt * mSpeed;
-	}
+//    if(!mSkakeFlag){
+        // A S D W for motion along the camera basis vectors
+        if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_W ) == GLFW_PRESS)
+        {
+            mPosition += mLookAt * dt * mSpeed;
+            mPositionCache = mPosition;
+        }
+        
+        else if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_S ) == GLFW_PRESS)
+        {
+            mPosition -= mLookAt * dt * mSpeed;
+            mPositionCache = mPosition;
+        }
+        
+        else if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_D ) == GLFW_PRESS)
+        {
+            mPosition += sideVector * dt * mSpeed;
+            mPositionCache = mPosition;
+        }
+        
+        else if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_A ) == GLFW_PRESS)
+        {
+            mPosition -= sideVector * dt * mSpeed;
+            mPositionCache = mPosition;
+        }
+        else if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_Z ) == GLFW_PRESS || mSkakeFlag)
+        {
+            CameraSkake(dt);
+        }
+//    } else {
+//
+//    }
 }
 
 glm::mat4 FirstPersonCamera::GetViewMatrix() const
 {
 	return glm::lookAt(	mPosition, mPosition + mLookAt, vec3(0.0f, 1.0f, 0.0f) );
+}
+
+void FirstPersonCamera::CameraSkake(float dt){
+    mSkakeFlag = true;
+    mTimeElapsed += dt;
+    mAmplitude += mAdjustAmplitudePerSecond * dt;
+    cout << glm::cos((rand() % 180 + 1) * 3.1415926/180) * 0.01f << "\n";
+    mPosition.y +=  glm::cos((rand() % 180 + 1) * 3.1415926/180) * 0.02f;
+    mPosition.x += glm::cos((rand() % 180 + 1) * 3.1415926/180) * 0.02f;
+    mPosition.z += glm::cos((rand() % 180 + 1) * 3.1415926/180) * 0.02f;
+    if(mAmplitude < 0.0f){
+        mSkakeFlag = false;
+        mAmplitude = 5.0f;
+        //mPosition = mPositionCache;
+    }
+}
+
+void FirstPersonCamera::ToggleShakeFlag(){
+    mSkakeFlag = !mSkakeFlag;
+}
+
+void FirstPersonCamera::SetShakeFlag(bool flag){
+    mSkakeFlag = flag;
 }
