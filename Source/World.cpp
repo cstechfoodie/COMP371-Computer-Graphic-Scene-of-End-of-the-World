@@ -227,37 +227,111 @@ void World::Draw()
 
 
 	//for luo
-	//Renderer::SetShader(SHADER_SQUARE);
-	//glUseProgram(Renderer::GetShaderProgramID());
-	//float tvertices[] = {
-	//	0.5f,  0.5f, 0.0f,  // top right
-	//	0.5f, -0.5f, 0.0f,  // bottom right
-	//	-0.5f, -0.5f, 0.0f,  // bottom left
-	//	-0.5f,  0.5f, 0.0f   // top left 
-	//};
-	//unsigned int tindices[] = {  // note that we start from 0!
-	//	0, 1, 3,  // first Triangle
-	//	1, 2, 3   // second Triangle
-	//};
-	//unsigned int tVBO, tVAO, tEBO;
-	//glGenVertexArrays(1, &tVAO);
-	//glGenBuffers(1, &tVBO);
-	//glGenBuffers(1, &tEBO);
-	//// bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
-	//glBindVertexArray(tVAO);
+	Renderer::SetShader(SHADER_SQUARE1);
+	glUseProgram(Renderer::GetShaderProgramID());
+	float tvertices[] = {
+		1.0f,  1.0f, 0.0f,  // top right
+		1.0f, -1.0f, 0.0f,  // bottom right
+        0.8f, -1.0f, 0.0f,  // bottom left
+		0.8f,  1.0f, 0.0f   // top left
+	};
+	unsigned int tindices[] = {  // note that we start from 0!
+		0, 1, 3,  // first Triangle
+		1, 2, 3   // second Triangle
+	};
+	unsigned int tVBO, tVAO, tEBO;
+	glGenVertexArrays(1, &tVAO);
+	glGenBuffers(1, &tVBO);
+	glGenBuffers(1, &tEBO);
+	// bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
+	glBindVertexArray(tVAO);
 
-	//glBindBuffer(GL_ARRAY_BUFFER, tVBO);
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(tvertices), tvertices, GL_STATIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, tVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(tvertices), tvertices, GL_STATIC_DRAW);
 
-	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, tEBO);
-	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(tindices), tindices, GL_STATIC_DRAW);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, tEBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(tindices), tindices, GL_STATIC_DRAW);
 
-	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	//glEnableVertexAttribArray(0);
-	//glBindVertexArray(tVAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-	//						 //						 //glDrawArrays(GL_TRIANGLES, 0, 6);
-	//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+	glBindVertexArray(tVAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
+						 //						 //glDrawArrays(GL_TRIANGLES, 0, 6);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
+    
+    Renderer::SetShader(SHADER_SQUARE2);
+    glUseProgram(Renderer::GetShaderProgramID());
+    
+    mat4 model = glm::mat4(1.0f);
+    glm::vec3 po(0.9f,0.9f,-1.0f);
+    model= glm::translate(model, po);
+    model= glm::scale(model, glm::vec3(0.05f));
+    model= glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0,0.0,1.0));
+    glUniformMatrix4fv(glGetUniformLocation(Renderer::GetShaderProgramID(),"WorldTransform"),1,false,&model[0][0]);
+    
+    float tbvertices[] = {
+        1.0f,  1.0f, 0.0f,  // top right
+        1.0f, -1.0f, 0.0f,  // bottom right
+        -1.0f, -1.0f, 0.0f,  // bottom left
+        -1.0f,  1.0f, 0.0f   // top left
+    };
+    unsigned int tbindices[] = {  // note that we start from 0!
+        0, 1, 3,  // first Triangle
+        1, 2, 3   // second Triangle
+    };
+    unsigned int tbVBO, tbVAO, tbEBO;
+    glGenVertexArrays(1, &tbVAO);
+    glGenBuffers(1, &tbVBO);
+    glGenBuffers(1, &tbEBO);
+    // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
+    glBindVertexArray(tbVAO);
+    
+    glBindBuffer(GL_ARRAY_BUFFER, tbVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(tbvertices), tbvertices, GL_STATIC_DRAW);
+    
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, tEBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(tbindices), tbindices, GL_STATIC_DRAW);
+    
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    
+
+    glBindVertexArray(tbVAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
+    //                         //glDrawArrays(GL_TRIANGLES, 0, 6);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    
+    //button2
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 	// Restore previous shader
 	Renderer::SetShader((ShaderType) prevShader);
 

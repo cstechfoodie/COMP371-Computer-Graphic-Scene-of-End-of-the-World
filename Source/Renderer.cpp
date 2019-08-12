@@ -94,8 +94,18 @@ void Renderer::Initialize()
 	sShaderProgramID.push_back(
 		LoadShaders(shaderPathPrefix + "square.vertexshader",
 			shaderPathPrefix + "square.fragmentshader")
+                               
+                             
 	);
 
+    sShaderProgramID.push_back(
+                               LoadShaders(shaderPathPrefix + "square2.vertexshader",
+                                           shaderPathPrefix + "square2.fragmentshader")
+                               
+                               
+                               );
+    
+ 
 	sCurrentShader = 0;
 
 }
