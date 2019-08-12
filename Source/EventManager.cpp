@@ -9,7 +9,7 @@
 
 #include "EventManager.h"
 #include "Renderer.h"
-
+#include "World.h"
 #include <GLFW/glfw3.h>
 
 #include <stdio.h>
@@ -160,4 +160,7 @@ float EventManager::GetRandomFloat(float min, float max)
     float value = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 
     return min + value*(max - min);
+    
+
 }
+

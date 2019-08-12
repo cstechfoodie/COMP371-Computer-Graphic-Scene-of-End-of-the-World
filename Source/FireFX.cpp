@@ -30,6 +30,7 @@ FireFX::FireFX(int type, Model* parent): parent(parent)
 	pSystems.push_back(new ParticleSystem(emitter, &(descriptors[type]), this, id));
 	
 	id++;
+
 }
 
 

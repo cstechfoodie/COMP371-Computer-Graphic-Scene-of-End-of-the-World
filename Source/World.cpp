@@ -63,7 +63,10 @@ World::World()
 	mCurrentCamera = 0;
 
 	particles = vector<FireFX*>();
-	FireFX::loadDescriptors();
+	
+    FireFX::loadDescriptors();
+    
+
 }
 
 World::~World()
