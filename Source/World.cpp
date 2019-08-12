@@ -316,90 +316,21 @@ void World::Draw()
     //button2
 
     
-    model = glm::mat4(1.0f);
-    glm::vec3 poi(0.9f,0.6f,-1.0f);
-    model= glm::translate(model, poi);
-    model= glm::scale(model, glm::vec3(0.05f));
-    model= glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0,0.0,1.0));
-    glUniformMatrix4fv(glGetUniformLocation(Renderer::GetShaderProgramID(),"WorldTransform"),1,false,&model[0][0]);
-    
-    glBindVertexArray(tbVAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-    //                         //glDrawArrays(GL_TRIANGLES, 0, 6);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     
     
     
-    model = glm::mat4(1.0f);
-    glm::vec3 pois(0.9f,0.3f,-1.0f);
-    model= glm::translate(model, pois);
-    model= glm::scale(model, glm::vec3(0.05f));
-    model= glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0,0.0,1.0));
-    glUniformMatrix4fv(glGetUniformLocation(Renderer::GetShaderProgramID(),"WorldTransform"),1,false,&model[0][0]);
-    
-    glBindVertexArray(tbVAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-    //                         //glDrawArrays(GL_TRIANGLES, 0, 6);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-    
-    
-    model = glm::mat4(1.0f);
-    glm::vec3 poisi(0.9f,0.0f,-1.0f);
-    model= glm::translate(model, poisi);
-    model= glm::scale(model, glm::vec3(0.05f));
-    model= glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0,0.0,1.0));
-    glUniformMatrix4fv(glGetUniformLocation(Renderer::GetShaderProgramID(),"WorldTransform"),1,false,&model[0][0]);
-    
-    glBindVertexArray(tbVAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-    //                         //glDrawArrays(GL_TRIANGLES, 0, 6);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     
     
     
-    model = glm::mat4(1.0f);
-    glm::vec3 poisit(0.9f,0.0f,-1.0f);
-    model= glm::translate(model, poisit);
-    model= glm::scale(model, glm::vec3(0.05f));
-    model= glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0,0.0,1.0));
-    glUniformMatrix4fv(glGetUniformLocation(Renderer::GetShaderProgramID(),"WorldTransform"),1,false,&model[0][0]);
-    
-    glBindVertexArray(tbVAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-    //                         //glDrawArrays(GL_TRIANGLES, 0, 6);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     
     
     
-    model = glm::mat4(1.0f);
-    glm::vec3 poisiti(0.9f,-0.3f,-1.0f);
-    model= glm::translate(model, poisiti);
-    model= glm::scale(model, glm::vec3(0.05f));
-    model= glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0,0.0,1.0));
-    glUniformMatrix4fv(glGetUniformLocation(Renderer::GetShaderProgramID(),"WorldTransform"),1,false,&model[0][0]);
-    
-    glBindVertexArray(tbVAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-    //                         //glDrawArrays(GL_TRIANGLES, 0, 6);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-    
-    model = glm::mat4(1.0f);
-    glm::vec3 poisitio(0.9f,-0.6f,-1.0f);
-    model= glm::translate(model, poisitio);
-    model= glm::scale(model, glm::vec3(0.05f));
-    model= glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0,0.0,1.0));
-    glUniformMatrix4fv(glGetUniformLocation(Renderer::GetShaderProgramID(),"WorldTransform"),1,false,&model[0][0]);
-    
-    glBindVertexArray(tbVAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-    //                         //glDrawArrays(GL_TRIANGLES, 0, 6);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     
     
-    model = glm::mat4(1.0f);
-    glm::vec3 poisition(0.9f,-0.9f,-1.0f);
-    model= glm::translate(model, poisition);
-    model= glm::scale(model, glm::vec3(0.05f));
-    model= glm::rotate(model, glm::radians(90.0f), glm::vec3(0.0,0.0,1.0));
-    glUniformMatrix4fv(glGetUniformLocation(Renderer::GetShaderProgramID(),"WorldTransform"),1,false,&model[0][0]);
     
-    glBindVertexArray(tbVAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-    //                         //glDrawArrays(GL_TRIANGLES, 0, 6);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    
+    
+    
     
     
     

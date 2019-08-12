@@ -28,7 +28,8 @@ FirstPersonCamera::~FirstPersonCamera()
 
 void FirstPersonCamera::Update(float dt)
 {
-
+	// Prevent from having the camera move only when the cursor is within the windows
+	EventManager::DisableMouseCursor();
 
 
 	// The Camera moves based on the User inputs

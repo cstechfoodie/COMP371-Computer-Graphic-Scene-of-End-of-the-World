@@ -29,12 +29,6 @@ BSplineCamera::BSplineCamera(BSpline* spline, float speed)
     mUp = vec3(0.0f, 1.0f, 0.0f);
 }
 
-
-
-
-
-
-
 BSplineCamera::~BSplineCamera()
 {
 }
