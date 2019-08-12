@@ -60,7 +60,6 @@ void FirstPersonCamera::Update(float dt)
 	
 	vec3 sideVector = glm::cross(mLookAt, vec3(0.0f, 1.0f, 0.0f));
 	glm::normalize(sideVector);
-//    if(!mSkakeFlag){
         // A S D W for motion along the camera basis vectors
         if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_W ) == GLFW_PRESS)
         {
@@ -89,9 +88,6 @@ void FirstPersonCamera::Update(float dt)
         {
             CameraSkake(dt);
         }
-//    } else {
-//
-//    }
 }
 
 glm::mat4 FirstPersonCamera::GetViewMatrix() const

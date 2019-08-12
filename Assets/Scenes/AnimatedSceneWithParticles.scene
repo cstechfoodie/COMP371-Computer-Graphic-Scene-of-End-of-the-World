@@ -103,12 +103,20 @@ controlpoint = -20.0 4.0 -4.0
 controlpoint = -28.0 0.0 10.0
 controlpoint = -14.0 -2.0 16.0
 controlpoint = 0.0 -4.0 30.0
-controlpoint = 8.0 -2.0 20.0
+controlpoint = 2.0 -10.0 27.0
+controlpoint = 5.0 -15.0 24.0
+controlpoint = 7.0 -8.0 22.0
+controlpoint = 10.0 -12.0 12.0
+controlpoint = 12.0 -2.0 20.0
 controlpoint = 8.0 0.0 5
 controlpoint = 10.0 4.0 5
 controlpoint = 16.0 4.0 2
 controlpoint = 26.0 10.0 2
 controlpoint = 30.0 20.0 30.0
+controlpoint = 40.0 35.0 30.0
+controlpoint = 40.0 35.0 -30.0
+controlpoint = -40.0 35.0 -30.0
+controlpoint = -40.0 35.0 30.0
 
 [Cube]
 name     = "Cube"
