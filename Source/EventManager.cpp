@@ -21,7 +21,8 @@
 #include <time.h>
 
 using namespace std;
-
+int width=1000;
+int length=760;
 
 // Time
 double EventManager::sLastFrameTime = glfwGetTime();
@@ -68,7 +69,7 @@ void EventManager::Initialize()
     
 	// Open a window and create its OpenGL context
 	glfwWindowHint(GLFW_RESIZABLE, 0);
-	spWindow = glfwCreateWindow(1024, 768, "COMP371 - Assignment Framework", nullptr, nullptr);
+	spWindow = glfwCreateWindow(width, length, "COMP371 - Assignment Framework", nullptr, nullptr);
 
 	if (spWindow == nullptr)
 	{
