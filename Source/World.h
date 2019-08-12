@@ -22,6 +22,7 @@ class AnimationKey;
 class ParticleSystem;
 class ParticleDescriptor;
 class FireFX;
+class BSpline;
 
 class World
 {
@@ -48,6 +49,7 @@ private:
     std::vector<Animation*> mAnimation;
     std::vector<AnimationKey*> mAnimationKey;
 	std::vector<Camera*> mCamera;
+    std::vector<BSpline*> mSpline;
 	unsigned int mCurrentCamera;
 	FireFX* fire1;
 };
