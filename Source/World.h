@@ -15,6 +15,8 @@
 #include "FireFX.h"
 #include <vector>
 
+using namespace std;
+
 class Camera;
 class Model;
 class Animation;
@@ -38,7 +40,6 @@ public:
 	void LoadScene(const char * scene_path);
     Animation* FindAnimation(ci_string animName);
     AnimationKey* FindAnimationKey(ci_string keyName);
-    ParticleDescriptor* FindParticleDescriptor(ci_string name);
 
     const Camera* GetCurrentCamera() const;
 
@@ -51,5 +52,5 @@ private:
 	std::vector<Camera*> mCamera;
     std::vector<BSpline*> mSpline;
 	unsigned int mCurrentCamera;
-	FireFX* fire1;
+	vector<FireFX*> particles;
 };
