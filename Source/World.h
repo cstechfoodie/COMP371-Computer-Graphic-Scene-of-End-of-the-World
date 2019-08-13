@@ -14,7 +14,7 @@
 #include "Billboard.h"
 #include "FireFX.h"
 #include <vector>
-
+#include "Skybox.h"
 using namespace std;
 
 class Camera;
@@ -45,7 +45,7 @@ public:
 
 private:
     static World* instance;
-    
+	Skybox* skybox;
 	std::vector<Model*> mModel;
     std::vector<Animation*> mAnimation;
     std::vector<AnimationKey*> mAnimationKey;

@@ -61,6 +61,12 @@ World::World()
 {
     instance = this;
 
+#if defined(PLATFORM_OSX)
+	this->skybox = new Skybox(vec3(100.0f, 100.0f, 100.0f), "Textures\\mercury_ft.tga", "Textures\\mercury_bk.tga", "Textures\\mercury_dn.tga", "Textures\\mercury_up.tga", "Textures\\mercury_rt.tga", "Textures\\mercury_lf.tga");
+#else
+	this->skybox = new Skybox(vec3(100.0f, 100.0f, 100.0f), "..\\Assets\\Textures\\mercury_ft.tga", "..\\Assets\\Textures\\mercury_bk.tga", "..\\Assets\\Textures\\mercury_dn.tga", "..\\Assets\\Textures\\mercury_up.tga", "..\\Assets\\Textures\\mercury_rt.tga", "..\\Assets\\Textures\\mercury_lf.tga");
+#endif
+
 	// Setup Camera
 	mCamera.push_back(new FirstPersonCamera(vec3(3.0f, 5.0f, 20.0f)));
 	mCamera.push_back(new StaticCamera(vec3(3.0f, 30.0f, 5.0f), vec3(0.0f, 0.0f, 0.0f), vec3(0.0f, 1.0f, 0.0f)));
@@ -153,6 +159,8 @@ void World::Update(float dt)
 	{
 		fire->Update(dt);
 	}
+
+	this->skybox->Update(dt);
 }
 
 void World::Draw()
@@ -489,6 +497,16 @@ void World::Draw()
     glBindVertexArray(tbVAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
     //                         //glDrawArrays(GL_TRIANGLES, 0, 6);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+
+	//draw skybox
+
+	glDepthMask(GL_FALSE);
+	glDepthFunc(GL_LEQUAL);
+	this->skybox->Draw();
+	glDepthFunc(GL_LESS); // set depth function back to default
+	glDepthMask(GL_TRUE);
+
 
 	// Restore previous shader
 	Renderer::SetShader((ShaderType) prevShader);

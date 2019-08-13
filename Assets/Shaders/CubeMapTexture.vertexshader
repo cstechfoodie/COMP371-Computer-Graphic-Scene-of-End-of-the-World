@@ -1,0 +1,17 @@
+#version 330 core
+
+layout(location = 0) in vec3 vertexPosition_modelspace;
+
+uniform mat4 ViewProjectionTransform;
+uniform mat4 WorldTransform;
+
+out vec3 textureCoordinates;
+
+void main()
+{
+	textureCoordinates = -vertexPosition_modelspace; 
+	vec4 pos=ViewProjectionTransform * vec4(vertexPosition_modelspace, 1.0f);
+    gl_Position = pos.xyww;
+
+	
+}

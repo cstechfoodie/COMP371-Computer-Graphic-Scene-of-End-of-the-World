@@ -13,13 +13,17 @@
 #include "Billboard.h"
 #include "TextureLoader.h"
 #include <GLFW/glfw3.h>
+#include <irrKlang/irrKlang.h>
+
+
+
+//For soundtrack
+using namespace irrklang;
+ISoundEngine *SoundEngine = createIrrKlangDevice();
+
 
 
 extern int button_3;
-
-
-
-
 
 
 
@@ -59,6 +63,16 @@ int main(int argc, char*argv[])
     glfwSetCursorPosCallback(EventManager::GetWindow(), EventManager::mouse_callback);
     glfwSetMouseButtonCallback(EventManager::GetWindow(), EventManager::mouseButtonCallback);
 	
+
+
+	//Play SoundTRack
+#if defined(PLATFORM_OSX)
+	SoundEngine->play2D("Music/15 Illidan.mp3", GL_FALSE);
+#else
+	SoundEngine->play2D("../Assets/Music/15 Illidan.mp3", GL_FALSE);
+#endif
+
+
     // Main Loop
 	do
 	{
@@ -74,7 +88,43 @@ int main(int argc, char*argv[])
      
 		world.Draw();
         
-        
+        //control sound track
+		if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_Z) == GLFW_PRESS)
+		{
+			SoundEngine->stopAllSounds();
+#if defined(PLATFORM_OSX)
+			SoundEngine->play2D("Music/DFO Underfoot Town Ds.mp3", GL_TRUE);
+
+#else
+			SoundEngine->play2D("../Assets/Music/DFO Underfoot Town Ds.mp3", GL_TRUE);
+#endif
+		}
+		if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_X) == GLFW_PRESS)
+		{
+			SoundEngine->stopAllSounds();
+#if defined(PLATFORM_OSX)
+			SoundEngine->play2D("Music/01-cha-la head-cha-la (tv size).mp3", GL_TRUE);
+#else
+			SoundEngine->play2D("../Assets/Music/01-cha-la head-cha-la (tv size).mp3", GL_TRUE);
+#endif
+			
+		}
+		if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_C) == GLFW_PRESS)
+		{
+			SoundEngine->stopAllSounds();
+#if defined(PLATFORM_OSX)
+			SoundEngine->play2D("Music/01 - Super Mario Bros.mp3", GL_TRUE);
+#else
+			SoundEngine->play2D("../Assets/Music/01 - Super Mario Bros.mp3", GL_TRUE);
+#endif
+			
+		}
+		if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_V) == GLFW_PRESS)
+		{
+			SoundEngine->stopAllSounds();
+
+		}
+
 	}
 	while(EventManager::ExitRequested() == false);
 

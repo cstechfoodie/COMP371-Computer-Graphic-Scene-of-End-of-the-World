@@ -15,6 +15,7 @@
 #include <iostream>
 #include <fstream>
 #include <algorithm>
+
 using namespace std;
 
 #include <stdlib.h>
@@ -104,6 +105,12 @@ void Renderer::Initialize()
                                
                                
                                );
+
+	sShaderProgramID.push_back(
+		LoadShaders(shaderPathPrefix + "CubeMapTexture.vertexshader",
+			shaderPathPrefix + "CubeMapTexture.fragmentshader")
+	);
+
     
  
 	sCurrentShader = 0;
