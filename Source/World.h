@@ -9,11 +9,11 @@
 
 #pragma once
 
-
 #include "ParsingHelper.h"
 #include "Billboard.h"
 #include "FireFX.h"
 #include <vector>
+#include "Water.h"
 
 using namespace std;
 
@@ -42,6 +42,7 @@ public:
     AnimationKey* FindAnimationKey(ci_string keyName);
 
     const Camera* GetCurrentCamera() const;
+    Water* water;
 
 private:
     static World* instance;

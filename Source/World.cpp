@@ -6,7 +6,6 @@
 //
 // Copyright (c) 2014-2019 Concordia University. All rights reserved.
 //
-
 #include "World.h"
 #include "Renderer.h"
 #include "ParsingHelper.h"
@@ -28,6 +27,7 @@
 
 #include "BSpline.hpp"
 #include "BSplineCamera.h"
+#include "Water.h"
 
 using namespace std;
 using namespace glm;
@@ -69,6 +69,7 @@ World::World()
 
 	particles = vector<FireFX*>();
     FireFX::loadDescriptors();
+    water = new Water(40,40);
 }
 
 World::~World()
@@ -153,12 +154,15 @@ void World::Update(float dt)
 	{
 		fire->Update(dt);
 	}
+    
+    water->Update(dt);
+    
 }
 
 void World::Draw()
 {
 	Renderer::BeginFrame();
-	
+    
 	// Set shader to use
 	glUseProgram(Renderer::GetShaderProgramID());
 
@@ -169,6 +173,7 @@ void World::Draw()
 	mat4 VP = mCamera[mCurrentCamera]->GetViewProjectionMatrix();
 	glUniformMatrix4fv(VPMatrixLocation, 1, GL_FALSE, &VP[0][0]);
 
+    
 	// Draw models
 	GLuint LightPosition1ID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightPositions[0]");
 	GLuint LightPosition2ID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightPositions[1]");
@@ -294,8 +299,11 @@ void World::Draw()
         }
     }
     
-	// Draw Path Lines
-	
+	//water
+   // Renderer::SetShader(SHADER_WATER);
+    // glUseProgram(Renderer::GetShaderProgramID());
+    water->Draw();
+    // Draw Path Lines
 	// Set Shader for path lines
 	unsigned int prevShader = Renderer::GetCurrentShader();
 	Renderer::SetShader(SHADER_PATH_LINES);
@@ -329,7 +337,7 @@ void World::Draw()
 		fire->Draw();
 	}
 
-
+    
 	//for luo
 	Renderer::SetShader(SHADER_SQUARE1);
 	glUseProgram(Renderer::GetShaderProgramID());
@@ -489,7 +497,7 @@ void World::Draw()
     glBindVertexArray(tbVAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
     //                         //glDrawArrays(GL_TRIANGLES, 0, 6);
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
+    
 	// Restore previous shader
 	Renderer::SetShader((ShaderType) prevShader);
 

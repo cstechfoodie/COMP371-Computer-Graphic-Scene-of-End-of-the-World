@@ -33,6 +33,7 @@
 		03DA72D222B02FC5009C7A21 /* libGLEW.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 03DA72D122B02FC5009C7A21 /* libGLEW.a */; };
 		03FE4ED41B2FA1210020F06F /* Scenes in CopyFiles */ = {isa = PBXBuildFile; fileRef = 03FE4ED21B2FA1010020F06F /* Scenes */; };
 		03FE4ED51B2FA1210020F06F /* Shaders in CopyFiles */ = {isa = PBXBuildFile; fileRef = 03FE4ED31B2FA1010020F06F /* Shaders */; };
+		5AA7995D2302564A00DDE0C9 /* Water.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 5AA7995C2302564900DDE0C9 /* Water.cpp */; };
 		B5C2AE0A2300EC190075FC3E /* BSpline.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5C2AE092300EC190075FC3E /* BSpline.cpp */; };
 		B5C2AE0C2300EDCF0075FC3E /* BSplineCamera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B5C2AE0B2300EDCF0075FC3E /* BSplineCamera.cpp */; };
 		BE6DBEC42300E90A00AD2988 /* FireFX.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BE6DBEC32300E90A00AD2988 /* FireFX.cpp */; };
@@ -98,6 +99,8 @@
 		03DA72D122B02FC5009C7A21 /* libGLEW.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libGLEW.a; path = "../ThirdParty/glew-2.1.0/lib/osx/libGLEW.a"; sourceTree = "<group>"; };
 		03FE4ED21B2FA1010020F06F /* Scenes */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Scenes; path = ../Assets/Scenes; sourceTree = "<group>"; };
 		03FE4ED31B2FA1010020F06F /* Shaders */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Shaders; path = ../Assets/Shaders; sourceTree = "<group>"; };
+		5AA7995B2302564900DDE0C9 /* Water.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Water.h; sourceTree = "<group>"; };
+		5AA7995C2302564900DDE0C9 /* Water.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Water.cpp; sourceTree = "<group>"; };
 		B5C2AE082300EC100075FC3E /* BSpline.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = BSpline.hpp; sourceTree = "<group>"; };
 		B5C2AE092300EC190075FC3E /* BSpline.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BSpline.cpp; sourceTree = "<group>"; };
 		B5C2AE0B2300EDCF0075FC3E /* BSplineCamera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BSplineCamera.cpp; sourceTree = "<group>"; };
@@ -170,6 +173,8 @@
 		038B785E1A6EB3F500111E36 /* Source */ = {
 			isa = PBXGroup;
 			children = (
+				5AA7995C2302564900DDE0C9 /* Water.cpp */,
+				5AA7995B2302564900DDE0C9 /* Water.h */,
 				B5C2AE0D2300EDF40075FC3E /* BSplineCamera.h */,
 				B5C2AE0B2300EDCF0075FC3E /* BSplineCamera.cpp */,
 				B5C2AE092300EC190075FC3E /* BSpline.cpp */,
@@ -279,6 +284,7 @@
 				B5C2AE0C2300EDCF0075FC3E /* BSplineCamera.cpp in Sources */,
 				0321759922D7005B00DF6CEA /* Animation.cpp in Sources */,
 				B5C2AE0A2300EC190075FC3E /* BSpline.cpp in Sources */,
+				5AA7995D2302564A00DDE0C9 /* Water.cpp in Sources */,
 				0321759E22D7005B00DF6CEA /* Renderer.cpp in Sources */,
 				0321759C22D7005B00DF6CEA /* ParticleEmitter.cpp in Sources */,
 				0321759522D7005B00DF6CEA /* CubeModel.cpp in Sources */,
@@ -328,7 +334,7 @@
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_NO_COMMON_BLOCKS = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -381,7 +387,7 @@
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_NO_COMMON_BLOCKS = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
