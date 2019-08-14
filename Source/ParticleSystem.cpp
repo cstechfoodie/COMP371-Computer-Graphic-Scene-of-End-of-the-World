@@ -22,8 +22,8 @@ using namespace glm;
 //self-defined value of PI
 float PI = 3.14159265358979323846;
 
-ParticleSystem::ParticleSystem(ParticleEmitter* emitter, ParticleDescriptor* descriptor)
-: mpDescriptor(descriptor), mpEmitter(emitter), timeSinceLastParticleEmitted(0.0f)
+ParticleSystem::ParticleSystem(ParticleEmitter* emitter, ParticleDescriptor* descriptor, FireFX* parent, unsigned int id)
+: mpDescriptor(descriptor), mpEmitter(emitter), timeSinceLastParticleEmitted(0.0f), parent(parent), id(id)
 {
     assert(mpDescriptor != nullptr);
     assert(mpEmitter != nullptr);
@@ -43,7 +43,7 @@ ParticleSystem::~ParticleSystem()
 {
 	for (std::list<Particle*>::iterator it = mParticleList.begin(); it != mParticleList.end(); ++it)
 	{
-        World::GetInstance()->RemoveBillboard(&(*it)->billboard);
+		parent->bList[id]->RemoveBillboard(&(*it)->billboard);
 		delete *it;
 	}
 
@@ -73,7 +73,7 @@ void ParticleSystem::Update(float dt)
 		Particle* newParticle = mInactiveParticles.back();
 		mParticleList.push_back(newParticle);
 		mInactiveParticles.pop_back();
-		World::GetInstance()->AddBillboard(&newParticle->billboard);
+		parent->bList[id]->AddBillboard(&newParticle->billboard);
 
 		// Set particle initial parameters
 		newParticle->billboard.position = mpEmitter->GetPosition();
@@ -94,24 +94,19 @@ void ParticleSystem::Update(float dt)
 		// Step 2 : You can rotate the result in step 1 by an random angle from 0 to
 		//          360 degrees about the original velocity vector
 
-		//delta angle of random velocity
-		float deltaAngle = EventManager::GetRandomFloat(0.0f, 1.0f) * mpDescriptor->velocityAngleRandomness;
+
+		float randomAngle = EventManager::GetRandomFloat(0, mpDescriptor->velocityAngleRandomness);
 		
-		//Rotation angle of particle velocity
-		float rotationAngle = EventManager::GetRandomFloat(0.0f, 360);
+		float randSign = EventManager::GetRandomFloat(0, 1) > 0.5 ? 1 : -1;
+		
+		glm::mat4 rotationMatFirst = glm::rotate(
+			glm::mat4(1.0f), radians(randomAngle * randSign),
+			glm::normalize(glm::cross(newParticle->velocity, glm::vec3(8, 0, 1)))
+		);
 
-		//Radius of spherical coordinate
-		float radius = pow(pow(newParticle->velocity.x, 2.0) + pow(newParticle->velocity.y, 2.0), 0.5);
+		newParticle->velocity = glm::vec3(rotationMatFirst * glm::vec4(newParticle->velocity, 0.0));
 
-		//for computing the rotational velocity from delta angle and the velocity after rotation by a random angle between 0 to 360
-		vec4 orthogonalVector = vec4(radius * sin(deltaAngle * PI / 150), radius * cos(deltaAngle * PI / 150), newParticle->velocity.z, 0);
-		mat4 orthogonalMatrix = rotate(mat4(1.0f), rotationAngle, mpDescriptor->velocity);
-		orthogonalVector = orthogonalMatrix * orthogonalVector;
-
-		//Update the value of particles' velocity
-		newParticle->velocity = vec3(orthogonalVector[0], orthogonalVector[1], orthogonalVector[2]);
-
-		World::GetInstance()->AddBillboard(&newParticle->billboard);
+		parent->bList[id]->AddBillboard(&newParticle->billboard);
     }
     
     
@@ -122,13 +117,8 @@ void ParticleSystem::Update(float dt)
         p->billboard.position += p->velocity * dt;
         
         // @TODO 6 - Update each particle parameters
-        //
-        // Update the velocity of the particle from the acceleration in the descriptor
 
 		p->velocity += (mpDescriptor->acceleration * dt);
-		//p->billboard.position += p->velocity * dt;
-
-        // Update the size of the particle according to its growth
 
 		p->billboard.size += dt * mpDescriptor->sizeGrowthVelocity;
 
@@ -148,11 +138,7 @@ void ParticleSystem::Update(float dt)
 		else 
 			p->billboard.color = mix(mpDescriptor->midColor, mpDescriptor->endColor,
 			(p->currentTime - (p->lifeTime - mpDescriptor->fadeOutTime)) / (p->lifeTime - (p->lifeTime - mpDescriptor->fadeOutTime)));
-                
-        
-        // ...
-        //p->billboard.color = vec4(1.0f, 1.0f, 1.0f, 1.0f); // wrong... check required implementation above
-        // ...
+                      
         
         // Do not touch code below...
         
@@ -163,7 +149,7 @@ void ParticleSystem::Update(float dt)
         {
             mInactiveParticles.push_back(*it);
             
-            World::GetInstance()->RemoveBillboard(&(p->billboard));
+			parent->bList[id]->RemoveBillboard(&(p->billboard));
             mParticleList.remove(*it++);
         }
     }

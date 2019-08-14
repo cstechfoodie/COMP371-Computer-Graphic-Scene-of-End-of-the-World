@@ -31,7 +31,7 @@ struct CompareBillboardAlongZ{
 class BillboardList
 {
 public:
-    BillboardList(unsigned int maxNumBillboards, int textureID);
+    BillboardList(unsigned int maxNumBillboards, int textureID, int rows=1);
     ~BillboardList();
     
     void AddBillboard(Billboard* b);
@@ -55,6 +55,7 @@ private:
     std::list<Billboard*> mBillboardList;
     
     int mTextureID;
+	int rows;
     unsigned int mMaxNumBillboards;
 
     unsigned int mVAO;

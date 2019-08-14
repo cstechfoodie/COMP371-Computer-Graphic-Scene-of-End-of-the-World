@@ -1,6 +1,0 @@
-newmtl gate
-Kd 1 1 1
-map_Kd gate_color.png
-map_Bump gate_normal.png
-illum 2
-

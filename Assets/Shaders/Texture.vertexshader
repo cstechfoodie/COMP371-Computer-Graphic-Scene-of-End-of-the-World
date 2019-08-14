@@ -17,6 +17,10 @@ uniform mat4 ViewProjectionTransform;
 
 uniform mat4 WorldTransform;
 
+uniform int numOfRows;
+
+uniform int subtextureid;
+
 // Outputs to fragment shader
 
 out vec3 normal;  // You will need this when you do per-fragment lighting
@@ -32,9 +36,19 @@ void main()
     gl_Position =  ViewProjectionTransform * WorldTransform * vec4(vertexPosition_modelspace, 1.0f);
 
     
-normal = vertexNormal_modelspace; // Does this need to be transformed when we pass it to the fragment shader?
+	normal = vertexNormal_modelspace; // Does this need to be transformed when we pass it to the fragment shader?
 	
-v_color = vertexColor;
-	UV = vertexUV;
-}
+	v_color = vertexColor;
 
+	int column = subtextureid % numOfRows;
+	int offsetX = column / numOfRows;
+
+	int row = subtextureid/numOfRows;
+	int offsetY = row / numOfRows;
+
+	UV = (vertexUV / numOfRows);
+
+	UV.x = UV.x + offsetX;
+	UV.y = UV.y + offsetY;
+	
+}

@@ -1,24 +1,2 @@
-﻿  Animation.cpp
-c:\users\hongb\comp371-computer-graphic-scene-of-end-of-the-world\source\animation.cpp(227): warning C4018: '<': signed/unsigned mismatch
-  Billboard.cpp
-  Camera.cpp
-  CubeModel.cpp
-  EventManager.cpp
-  FirstPersonCamera.cpp
-  main.cpp
-  Model.cpp
-  ParticleDescriptor.cpp
-  ParticleEmitter.cpp
-  ParticleSystem.cpp
-c:\users\hongb\comp371-computer-graphic-scene-of-end-of-the-world\source\particlesystem.cpp(23): warning C4305: 'initializing': truncation from 'double' to 'float'
-c:\users\hongb\comp371-computer-graphic-scene-of-end-of-the-world\source\particlesystem.cpp(104): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-  Renderer.cpp
-  SphereModel.cpp
-  StaticCamera.cpp
-  TextureLoader.cpp
-  World.cpp
-  Generating Code...
-LINK : warning LNK4098: defaultlib 'LIBCMT' conflicts with use of other libs; use /NODEFAULTLIB:library
-LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
-glew32s.lib(glew.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'glew32s.lib(glew.obj)' or at 'C:\Users\hongb\COMP371-Computer-Graphic-Scene-of-End-of-the-World\Bin\vc120.pdb'; linking object as if no debug info
-  Assignment1.vcxproj -> C:\Users\hongb\COMP371-Computer-Graphic-Scene-of-End-of-the-World\VS2017\/../Bin/Assignment1-Debug.exe
+﻿  main.cpp
+  Assignment1.vcxproj -> C:\Computer Science\Comp371\ProjectSkyboxAndSound\COMP371-Computer-Graphic-Scene-of-End-of-the-World\VS2017\/../Bin/Assignment1-Debug.exe
