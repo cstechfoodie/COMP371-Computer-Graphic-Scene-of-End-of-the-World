@@ -190,6 +190,7 @@ void World::Draw()
 	GLuint LightAttenuationID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightAttenuation");
 	GLuint MaterialID = glGetUniformLocation(Renderer::GetShaderProgramID(), "materialCoefficients");
     
+    water->Draw();
     
     if(button_5==1){
 	for (vector<Model*>::iterator it = mModel.begin(); it < mModel.end(); ++it)
@@ -302,7 +303,7 @@ void World::Draw()
 	//water
    // Renderer::SetShader(SHADER_WATER);
     // glUseProgram(Renderer::GetShaderProgramID());
-    water->Draw();
+    
     // Draw Path Lines
 	// Set Shader for path lines
 	unsigned int prevShader = Renderer::GetCurrentShader();
@@ -337,7 +338,6 @@ void World::Draw()
 		fire->Draw();
 	}
 
-    
 	//for luo
 	Renderer::SetShader(SHADER_SQUARE1);
 	glUseProgram(Renderer::GetShaderProgramID());
