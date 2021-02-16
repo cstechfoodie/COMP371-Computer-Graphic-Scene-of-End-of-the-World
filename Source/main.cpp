@@ -12,6 +12,14 @@
 #include "EventManager.h"
 #include "Billboard.h"
 #include "TextureLoader.h"
+#include <irrKlang/irrKlang.h>
+
+
+//For soundtrack
+using namespace irrklang;
+ISoundEngine *SoundEngine = createIrrKlangDevice();
+
+
 
 int main(int argc, char*argv[])
 {
@@ -42,6 +50,17 @@ int main(int argc, char*argv[])
 #endif
 	}
 
+
+	//Play SoundTRack
+
+	SoundEngine->play2D("../Assets/Music/15 Illidan.mp3", GL_TRUE);
+
+
+
+
+
+	
+
 	// Main Loop
 	do
 	{
@@ -53,7 +72,29 @@ int main(int argc, char*argv[])
 		world.Update(dt);
 
 		// Draw World
-		world.Draw();        
+		world.Draw();    
+		if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_Z) == GLFW_PRESS)
+		{
+			SoundEngine->stopAllSounds();
+			SoundEngine->play2D("../Assets/Music/DFO Underfoot Town Ds.mp3", GL_TRUE); 
+		}
+		if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_X) == GLFW_PRESS)
+		{
+			SoundEngine->stopAllSounds();
+			SoundEngine->play2D("../Assets/Music/01-cha-la head-cha-la (tv size).mp3", GL_TRUE);
+		}
+		if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_C) == GLFW_PRESS)
+		{
+			SoundEngine->stopAllSounds();
+			SoundEngine->play2D("../Assets/Music/01 - Super Mario Bros.mp3", GL_TRUE);
+		}
+		if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_V) == GLFW_PRESS)
+		{
+			SoundEngine->stopAllSounds();
+			
+		}
+		
+
 	}
 	while(EventManager::ExitRequested() == false);
 

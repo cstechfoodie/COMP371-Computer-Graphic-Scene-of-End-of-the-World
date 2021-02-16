@@ -28,8 +28,8 @@ bool CompareBillboardAlongZ::operator()(const Billboard* a, const Billboard* b)
 }
 
 
-BillboardList::BillboardList(unsigned int maxNumBillboards, int textureID)
-: mTextureID(textureID), mMaxNumBillboards(maxNumBillboards)
+BillboardList::BillboardList(unsigned int maxNumBillboards, int textureID, int rows)
+: mTextureID(textureID), mMaxNumBillboards(maxNumBillboards), rows(rows)
 {
     // Pre-allocate Vertex Buffer - 6 vertices by billboard (2 triangles)
     mVertexBuffer.resize(maxNumBillboards * 6);
@@ -106,7 +106,6 @@ BillboardList::BillboardList(unsigned int maxNumBillboards, int textureID)
                           (void*) (2* sizeof(vec3) + sizeof(vec4)) // texture coordinates are Offseted by 2 vec3 (see class Vertex) and a vec4
                           );
     glEnableVertexAttribArray(3);
-
 
 }
 
@@ -185,46 +184,22 @@ void BillboardList::Update(float dt)
         // First triangle
         // Top left
 		mVertexBuffer[firstVertexIndex].position = b->position - (camRight*b->size.x*0.5f) + (camUp*b->size.y*0.5f);
-
-        /*mVertexBuffer[firstVertexIndex].position.x = b->position.x - 0.5f*b->size.x;
-        mVertexBuffer[firstVertexIndex].position.y = b->position.y + 0.5f*b->size.y;
-        mVertexBuffer[firstVertexIndex].position.z = b->position.z;*/
         
         // Bottom Left
 		mVertexBuffer[firstVertexIndex + 1].position = b->position - (camRight*b->size.x*0.5f) - (camUp*b->size.y*0.5f);
-
-        /*mVertexBuffer[firstVertexIndex + 1].position.x = b->position.x - 0.5f*b->size.x;
-        mVertexBuffer[firstVertexIndex + 1].position.y = b->position.y - 0.5f*b->size.y;
-        mVertexBuffer[firstVertexIndex + 1].position.z = b->position.z;*/
         
         // Top Right
 		mVertexBuffer[firstVertexIndex + 2].position = b->position + (camRight*b->size.x*0.5f) + (camUp*b->size.y*0.5f);
-
-        /*mVertexBuffer[firstVertexIndex + 2].position.x = b->position.x + 0.5f*b->size.x;
-        mVertexBuffer[firstVertexIndex + 2].position.y = b->position.y + 0.5f*b->size.y;
-        mVertexBuffer[firstVertexIndex + 2].position.z = b->position.z;*/
         
         // Second Triangle
         // Top Right
 		mVertexBuffer[firstVertexIndex + 3].position = b->position + (camRight*b->size.x*0.5f) + (camUp*b->size.y*0.5f);
 
-        /*mVertexBuffer[firstVertexIndex + 3].position.x = b->position.x + 0.5f*b->size.x;
-        mVertexBuffer[firstVertexIndex + 3].position.y = b->position.y + 0.5f*b->size.y;
-        mVertexBuffer[firstVertexIndex + 3].position.z = b->position.z;*/
-        
         // Bottom Left
 		mVertexBuffer[firstVertexIndex + 4].position = b->position - (camRight*b->size.x*0.5f) - (camUp*b->size.y*0.5f);
-
-        /*mVertexBuffer[firstVertexIndex + 4].position.x = b->position.x - 0.5f*b->size.x;
-        mVertexBuffer[firstVertexIndex + 4].position.y = b->position.y - 0.5f*b->size.y;
-        mVertexBuffer[firstVertexIndex + 4].position.z = b->position.z;*/
         
         // Bottom Right
 		mVertexBuffer[firstVertexIndex + 5].position = b->position + (camRight*b->size.x*0.5f) - (camUp*b->size.y*0.5f);
-
-        /*mVertexBuffer[firstVertexIndex + 5].position.x = b->position.x + 0.5f*b->size.x;
-        mVertexBuffer[firstVertexIndex + 5].position.y = b->position.y - 0.5f*b->size.y;
-        mVertexBuffer[firstVertexIndex + 5].position.z = b->position.z;*/
 
         
         // do not touch this...
@@ -260,7 +235,19 @@ void BillboardList::Draw()
     glBindTexture(GL_TEXTURE_2D, mTextureID);
     glUniform1i(textureLocation, 0);				// Set our Texture sampler to user Texture Unit 0
 
+
+
+	// Set the index of the sub texture to use
+	
+	GLuint numOfRows = glGetUniformLocation(Renderer::GetShaderProgramID(), "numOfRows");
+	glUniform1i(numOfRows, rows);
+	
+	int randomIndex = EventManager::GetRandomFloat(0, rows * rows -1);
+
+	GLuint subtextureid = glGetUniformLocation(Renderer::GetShaderProgramID(), "subtextureid");
+	glUniform1i(subtextureid, randomIndex);
     
+
     Renderer::CheckForErrors();
 
     // This looks for the MVP Uniform variable in the Vertex Program

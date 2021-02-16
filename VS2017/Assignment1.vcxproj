@@ -45,7 +45,8 @@
     <OutDir>$(SolutionDir)/../Bin/</OutDir>
     <IntDir>$(SolutionDir)/../Build/$(Configuration)/</IntDir>
     <TargetName>$(ProjectName)-$(Configuration)</TargetName>
-    <IncludePath>C:\Users\Frank\Desktop\Concordia\【Summer 2019】\COMP 371 Computer Graphics\【Assignments】\A1 due July 10\A1_Programming_40068834\Source;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Computer Science\Comp371\Project\windows\ThirdParty;C:\Users\Frank\Desktop\Concordia\【Summer 2019】\COMP 371 Computer Graphics\【Assignments】\A1 due July 10\A1_Programming_40068834\Source;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Computer Science\Comp371\Project\windows\ThirdParty\Libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -67,7 +68,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>../ThirdParty/FreeImage-3170/lib/win32;../ThirdParty/glew-2.1.0/lib/win32;../ThirdParty/glfw-3.3/lib/win32/lib-vc2017</AdditionalLibraryDirectories>
-      <AdditionalDependencies>FreeImage.lib;opengl32.lib;glew32s.lib;glfw3.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>FreeImage.lib;opengl32.lib;glew32s.lib;glfw3.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;irrKlang.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <BuildLog>
       <Path>
@@ -104,12 +105,17 @@
     <None Include="..\Assets\Scenes\AnimatedScene.scene" />
     <None Include="..\Assets\Scenes\AnimatedSceneWithParticles.scene" />
     <None Include="..\Assets\Scenes\CoordinateSystem.scene" />
+    <None Include="..\Assets\Scenes\FireFX.scene" />
     <None Include="..\Assets\Scenes\StaticScene.scene" />
     <None Include="..\Assets\Shaders\BlueColor.fragmentshader" />
+    <None Include="..\Assets\Shaders\CubeMapTexture.fragmentshader" />
+    <None Include="..\Assets\Shaders\CubeMapTexture.vertexshader" />
     <None Include="..\Assets\Shaders\PathLines.fragmentshader" />
     <None Include="..\Assets\Shaders\PathLines.vertexshader" />
     <None Include="..\Assets\Shaders\SolidColor.fragmentshader" />
     <None Include="..\Assets\Shaders\SolidColor.vertexshader" />
+    <None Include="..\Assets\Shaders\SolidwithLight.fragmentshader" />
+    <None Include="..\Assets\Shaders\SolidwithLight.vertexshader" />
     <None Include="..\Assets\Shaders\Texture.fragmentshader" />
     <None Include="..\Assets\Shaders\Texture.vertexshader" />
   </ItemGroup>
@@ -119,6 +125,7 @@
     <ClCompile Include="..\Source\Camera.cpp" />
     <ClCompile Include="..\Source\CubeModel.cpp" />
     <ClCompile Include="..\Source\EventManager.cpp" />
+    <ClCompile Include="..\Source\FireFX.cpp" />
     <ClCompile Include="..\Source\FirstPersonCamera.cpp" />
     <ClCompile Include="..\Source\main.cpp" />
     <ClCompile Include="..\Source\Model.cpp" />
@@ -126,6 +133,7 @@
     <ClCompile Include="..\Source\ParticleEmitter.cpp" />
     <ClCompile Include="..\Source\ParticleSystem.cpp" />
     <ClCompile Include="..\Source\Renderer.cpp" />
+    <ClCompile Include="..\Source\Skybox.cpp" />
     <ClCompile Include="..\Source\SphereModel.cpp" />
     <ClCompile Include="..\Source\StaticCamera.cpp" />
     <ClCompile Include="..\Source\TextureLoader.cpp" />
@@ -137,13 +145,17 @@
     <ClInclude Include="..\Source\Camera.h" />
     <ClInclude Include="..\Source\CubeModel.h" />
     <ClInclude Include="..\Source\EventManager.h" />
+    <ClInclude Include="..\Source\FireFX.h" />
     <ClInclude Include="..\Source\FirstPersonCamera.h" />
     <ClInclude Include="..\Source\Model.h" />
+    <ClInclude Include="..\Source\OBJloader.h" />
+    <ClInclude Include="..\Source\OBJloaderV2.h" />
     <ClInclude Include="..\Source\ParsingHelper.h" />
     <ClInclude Include="..\Source\ParticleDescriptor.h" />
     <ClInclude Include="..\Source\ParticleEmitter.h" />
     <ClInclude Include="..\Source\ParticleSystem.h" />
     <ClInclude Include="..\Source\Renderer.h" />
+    <ClInclude Include="..\Source\Skybox.h" />
     <ClInclude Include="..\Source\SphereModel.h" />
     <ClInclude Include="..\Source\StaticCamera.h" />
     <ClInclude Include="..\Source\TextureLoader.h" />
@@ -151,6 +163,12 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\Assets\Textures\BillboardTest.bmp" />
+    <Image Include="..\Assets\Textures\mercury_bk.tga" />
+    <Image Include="..\Assets\Textures\mercury_dn.tga" />
+    <Image Include="..\Assets\Textures\mercury_ft.tga" />
+    <Image Include="..\Assets\Textures\mercury_lf.tga" />
+    <Image Include="..\Assets\Textures\mercury_rt.tga" />
+    <Image Include="..\Assets\Textures\mercury_up.tga" />
     <Image Include="..\Assets\Textures\Particle.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

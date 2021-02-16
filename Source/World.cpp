@@ -32,12 +32,35 @@ using namespace glm;
 
 World* World::instance;
 
-const vec4 lightPosition(0.0f, 10.0f, 20.0f,1.0f);//add a point light here
-const vec3 lightColor(1.0f, 1.0f, 1.0f);
+//const vec4 lightPosition(0.0f, 10.0f, 20.0f,1.0f);//add a point light here
+//const vec3 lightColor(1.0f, 1.0f, 1.0f);
+
+vec3 lightColors[5] = {
+	vec3(1.0f,0.0f,0.0f),
+	vec3(0.0f,1.0f,0.0f),
+	vec3(0.0f,0.0f,1.0f),
+	vec3(0.5f,0.5,0.5f),
+	vec3(1.0f,0.0f,0.0f)
+};
+vec4 lightPositions[5] = {
+	vec4(0.0f, 10.0f, 20.0f,1.0f),
+	vec4(0.0f, 10.0f, -20.0f,1.0f),
+	vec4(0.0f, 10.0f, 10.0f,1.0f),
+	vec4(5.0f, 10.0f, 10.0f,1.0f),
+	vec4(5.0f, 15.0f, 20.0f,1.0f)
+};
 
 World::World()
 {
     instance = this;
+
+
+#if defined(PLATFORM_OSX)
+	this->skybox = new Skybox(vec3(100.0f, 100.0f, 100.0f), "Textures\\mercury_ft.tga", "Textures\\mercury_bk.tga", "Textures\\mercury_dn.tga", "Textures\\mercury_up.tga", "Textures\\mercury_rt.tga", "Textures\\mercury_lf.tga");
+#else
+	this->skybox = new Skybox(vec3(100.0f, 100.0f, 100.0f), "..\\Assets\\Textures\\mercury_ft.tga", "..\\Assets\\Textures\\mercury_bk.tga", "..\\Assets\\Textures\\mercury_dn.tga", "..\\Assets\\Textures\\mercury_up.tga", "..\\Assets\\Textures\\mercury_rt.tga", "..\\Assets\\Textures\\mercury_lf.tga");
+#endif
+
 
 	// Setup Camera
 	mCamera.push_back(new FirstPersonCamera(vec3(3.0f, 5.0f, 20.0f)));
@@ -45,34 +68,7 @@ World::World()
 	mCamera.push_back(new StaticCamera(vec3(0.5f,  0.5f, 5.0f), vec3(0.0f, 0.5f, 0.0f), vec3(0.0f, 1.0f, 0.0f)));
 	mCurrentCamera = 0;
 
-    
-#if defined(PLATFORM_OSX)
-//    int billboardTextureID = TextureLoader::LoadTexture("Textures/BillboardTest.bmp");
-    int billboardTextureID = TextureLoader::LoadTexture("Textures/Particle.png");
-#else
-//    int billboardTextureID = TextureLoader::LoadTexture("../Assets/Textures/BillboardTest.bmp");
-    int billboardTextureID = TextureLoader::LoadTexture("../Assets/Textures/Particle.png");
-#endif
-    assert(billboardTextureID != 0);
-
-    mpBillboardList = new BillboardList(2048, billboardTextureID);
-
-    
-    // TODO - You can un-comment out these 2 temporary billboards and particle system
-    // That can help you debug billboards, you can set the billboard texture to billboardTest.png
-    /*    Billboard *b = new Billboard();
-     b->size  = glm::vec2(2.0, 2.0);
-     b->position = glm::vec3(0.0, 3.0, 0.0);
-     b->color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
-     
-     Billboard *b2 = new Billboard();
-     b2->size  = glm::vec2(2.0, 2.0);
-     b2->position = glm::vec3(0.0, 3.0, 1.0);
-     b2->color = glm::vec4(1.0f, 0.0f, 0.0f, 1.0f);
-
-     mpBillboardList->AddBillboard(b);
-     mpBillboardList->AddBillboard(b2);
-     */    // TMP
+	fire1 = new FireFX();
 }
 
 World::~World()
@@ -106,20 +102,7 @@ World::~World()
 	}
 	mCamera.clear();
     
-    for (vector<ParticleSystem*>::iterator it = mParticleSystemList.begin(); it < mParticleSystemList.end(); ++it)
-    {
-        delete *it;
-    }
-    mParticleSystemList.clear();
-    
-    for (vector<ParticleDescriptor*>::iterator it = mParticleDescriptorList.begin(); it < mParticleDescriptorList.end(); ++it)
-    {
-        delete *it;
-    }
-    mParticleDescriptorList.clear();
-
-    
-	delete mpBillboardList;
+	delete fire1;
 }
 
 World* World::GetInstance()
@@ -150,28 +133,6 @@ void World::Update(float dt)
 		}
 	}
 
-	// Spacebar to change the shader
-	if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_0 ) == GLFW_PRESS)
-	{
-		Renderer::SetShader(SHADER_SOLID_COLOR);
-	}
-	else if (glfwGetKey(EventManager::GetWindow(), GLFW_KEY_9 ) == GLFW_PRESS)
-	{
-		Renderer::SetShader(SHADER_BLUE);
-	}
-
-    // Update animation and keys
-    for (vector<Animation*>::iterator it = mAnimation.begin(); it < mAnimation.end(); ++it)
-    {
-        (*it)->Update(dt);
-    }
-    
-    for (vector<AnimationKey*>::iterator it = mAnimationKey.begin(); it < mAnimationKey.end(); ++it)
-    {
-        (*it)->Update(dt);
-    }
-
-
 	// Update current Camera
 	mCamera[mCurrentCamera]->Update(dt);
 	//get view matrix
@@ -180,23 +141,13 @@ void World::Update(float dt)
 	GLuint viewTransformID = glGetUniformLocation(Renderer::GetShaderProgramID(), "viewTransform");
 
 	glUseProgram(Renderer::GetShaderProgramID());
-	glUniformMatrix4fv(viewTransformID, 1, GL_FALSE, &view[0][0]);
+	glUniformMatrix4fv(viewTransformID, 1, GL_FALSE, &view[0][0]);  
+    
+	fire1->Update(dt);
 
-	// Update models
-	for (vector<Model*>::iterator it = mModel.begin(); it < mModel.end(); ++it)
-	{
-		(*it)->Update(dt);
-	}
-    
-    // Update billboards
-    
-    for (vector<ParticleSystem*>::iterator it = mParticleSystemList.begin(); it != mParticleSystemList.end(); ++it)
-    {
-        (*it)->Update(dt);
-    }
-    
-    mpBillboardList->Update(dt);
 
+
+	this->skybox->Update(dt);
 }
 
 void World::Draw()
@@ -214,25 +165,44 @@ void World::Draw()
 	glUniformMatrix4fv(VPMatrixLocation, 1, GL_FALSE, &VP[0][0]);
 
 	// Draw models
-	GLuint LightPositionID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightPosition");
-	GLuint LightColorID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightColor");
+	GLuint LightPosition1ID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightPositions[0]");
+	GLuint LightPosition2ID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightPositions[1]");
+	GLuint LightPosition3ID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightPositions[2]");
+	GLuint LightPosition4ID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightPositions[3]");
+	GLuint LightPosition5ID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightPositions[4]");
+	GLuint LightColor1ID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightColors[0]");
+	GLuint LightColor2ID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightColors[1]");
+	GLuint LightColor3ID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightColors[2]");
+	GLuint LightColor4ID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightColors[3]");
+	GLuint LightColor5ID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightColors[4]");
+	//GLuint LightPositionID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightPosition");
+	//GLuint LightColorID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightColor");
 	GLuint LightAttenuationID = glGetUniformLocation(Renderer::GetShaderProgramID(), "lightAttenuation");
 	GLuint MaterialID = glGetUniformLocation(Renderer::GetShaderProgramID(), "materialCoefficients");
+
 	for (vector<Model*>::iterator it = mModel.begin(); it < mModel.end(); ++it)
 	{	
 		// Get a handle for Light Attributes uniform
-		glUniform4f(LightPositionID, lightPosition.x, lightPosition.y, lightPosition.z, lightPosition.w);
-		glUniform3f(LightColorID, lightColor.r, lightColor.g, lightColor.b);
+		//glUniform4f(LightPositionID, lightPosition.x, lightPosition.y, lightPosition.z, lightPosition.w);
+		//glUniform3f(LightColorID, lightColor.r, lightColor.g, lightColor.b);
+		glUniform4f(LightPosition1ID, lightPositions[0].x, lightPositions[0].y, lightPositions[0].z, lightPositions[0].w);
+		glUniform4f(LightPosition2ID, lightPositions[1].x, lightPositions[1].y, lightPositions[1].z, lightPositions[1].w);
+		glUniform4f(LightPosition3ID, lightPositions[2].x, lightPositions[2].y, lightPositions[2].z, lightPositions[2].w);
+		glUniform4f(LightPosition4ID, lightPositions[3].x, lightPositions[3].y, lightPositions[3].z, lightPositions[3].w);
+		glUniform4f(LightPosition5ID, lightPositions[4].x, lightPositions[4].y, lightPositions[4].z, lightPositions[4].w);
+		glUniform3f(LightColor1ID, lightColors[0].r, lightColors[0].g, lightColors[0].b);
+		glUniform3f(LightColor2ID, lightColors[1].r, lightColors[1].g, lightColors[1].b);
+		glUniform3f(LightColor3ID, lightColors[2].r, lightColors[2].g, lightColors[2].b);
+		glUniform3f(LightColor4ID, lightColors[3].r, lightColors[3].g, lightColors[3].b);
+		glUniform3f(LightColor5ID, lightColors[4].r, lightColors[4].g, lightColors[4].b);
 		// Get a handle for Material Attributes uniform
-		vec4 material = mModel[2]->GetMaterial();
+		 vec4 material = mModel[1]->GetMaterial();
+
 		glUniform4f(MaterialID, material.x, material.y, material.z, material.w);
 		vec3 attenuation = (*it)->GetAttenuation();
 		glUniform3f(LightAttenuationID,attenuation.x, attenuation.y, attenuation.z);
 		
 		(*it)->Draw();
-		
-
-		
 	}
 
 	// Draw Path Lines
@@ -264,12 +234,58 @@ void World::Draw()
 
     Renderer::CheckForErrors();
     
-    // Draw Billboards
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    mpBillboardList->Draw();
-    glDisable(GL_BLEND);
 
+	glDepthMask(GL_FALSE);
+	glDepthFunc(GL_LEQUAL);
+	this->skybox->Draw();
+	glDepthFunc(GL_LESS); // set depth function back to default
+	glDepthMask(GL_TRUE);
+
+
+
+
+
+
+    // Draw Billboards
+	fire1->Draw();
+
+
+
+
+
+
+
+	//for luo
+	//Renderer::SetShader(SHADER_SQUARE);
+	//glUseProgram(Renderer::GetShaderProgramID());
+	//float tvertices[] = {
+	//	0.5f,  0.5f, 0.0f,  // top right
+	//	0.5f, -0.5f, 0.0f,  // bottom right
+	//	-0.5f, -0.5f, 0.0f,  // bottom left
+	//	-0.5f,  0.5f, 0.0f   // top left 
+	//};
+	//unsigned int tindices[] = {  // note that we start from 0!
+	//	0, 1, 3,  // first Triangle
+	//	1, 2, 3   // second Triangle
+	//};
+	//unsigned int tVBO, tVAO, tEBO;
+	//glGenVertexArrays(1, &tVAO);
+	//glGenBuffers(1, &tVBO);
+	//glGenBuffers(1, &tEBO);
+	//// bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
+	//glBindVertexArray(tVAO);
+
+	//glBindBuffer(GL_ARRAY_BUFFER, tVBO);
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(tvertices), tvertices, GL_STATIC_DRAW);
+
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, tEBO);
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(tindices), tindices, GL_STATIC_DRAW);
+
+	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	//glEnableVertexAttribArray(0);
+	//glBindVertexArray(tVAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
+	//						 //						 //glDrawArrays(GL_TRIANGLES, 0, 6);
+	//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 	// Restore previous shader
 	Renderer::SetShader((ShaderType) prevShader);
@@ -324,12 +340,6 @@ void World::LoadScene(const char * scene_path)
 				anim->Load(iss);
 				mAnimation.push_back(anim);
 			}
-            else if (result == "particledescriptor")
-            {
-                ParticleDescriptor* psd = new ParticleDescriptor();
-                psd->Load(iss);
-                AddParticleDescriptor(psd);
-            }
 			else if ( result.empty() == false && result[0] == '#')
 			{
 				// this is a comment line
@@ -381,40 +391,3 @@ const Camera* World::GetCurrentCamera() const
      return mCamera[mCurrentCamera];
 }
 
-void World::AddBillboard(Billboard* b)
-{
-    mpBillboardList->AddBillboard(b);
-}
-
-void World::RemoveBillboard(Billboard* b)
-{
-    mpBillboardList->RemoveBillboard(b);
-}
-
-void World::AddParticleSystem(ParticleSystem* particleSystem)
-{
-    mParticleSystemList.push_back(particleSystem);
-}
-
-void World::RemoveParticleSystem(ParticleSystem* particleSystem)
-{
-    vector<ParticleSystem*>::iterator it = std::find(mParticleSystemList.begin(), mParticleSystemList.end(), particleSystem);
-    mParticleSystemList.erase(it);
-}
-
-void World::AddParticleDescriptor(ParticleDescriptor* particleDescriptor)
-{
-    mParticleDescriptorList.push_back(particleDescriptor);
-}
-
-ParticleDescriptor* World::FindParticleDescriptor(ci_string name)
-{
-    for(std::vector<ParticleDescriptor*>::iterator it = mParticleDescriptorList.begin(); it < mParticleDescriptorList.end(); ++it)
-    {
-        if((*it)->GetName() == name)
-        {
-            return *it;
-        }
-    }
-    return nullptr;
-}
